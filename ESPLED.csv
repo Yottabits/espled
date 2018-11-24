@@ -1,0 +1,15 @@
+ID,Bezeichner,Gehäuse,Stückzahl,Bezeichnung,Anbieter und Ref.,
+1,U2,ESP-07v2,1,ESP-07v2,,x
+2,"R3,R1,R2",R_0603_HandSoldering,3,4.7k,,x
+3,"Q3,Q1,Q2",TO-220_Horizontal,3,IRLZ34N,,x
+4,"C1,C3",C_0603,2,1uF,,x
+5,CON1,BARREL_JACK,1,BARREL_JACK,"3,79 (20)",x
+6,P1,Pin_Header_Straight_2x03_Pitch2.54mm,1,PROG,,x
+7,P2,Pin_Header_Straight_1x04_Pitch2.54mm,1,LED_CON,,x
+8,"R4,R5",R_0603_HandSoldering,2,10k,,x
+9,SW1,SW_PUSH_6mm_h5mm,1,Reset,,x
+10,U1,SOT-23_Handsoldering,1,AP7333,"7,93 (50)",x
+11,C2,CP_Elec_10x10.5,1,1000uF,"2,13 (20x)",x
+12,C4,C_0603,1,100nF,"1,62 (100)",x
+13,"P3,P4",H2-3.5-7.0X7.0MM,2,LED_CON_SCREW,,x
+,,,,,,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
