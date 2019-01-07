@@ -531,7 +531,7 @@ U 1 1 5BFC851E
 P 850 2650
 F 0 "J2" H 1000 2600 50  0000 C CNN
 F 1 "LED_CON_RGB" H 850 2350 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" H 850 2650 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 850 2650 50  0001 C CNN
 F 3 "" H 850 2650 50  0001 C CNN
 	1    850  2650
 	-1   0    0    1   
@@ -1152,7 +1152,7 @@ U 1 1 5C346E88
 P 850 2950
 F 0 "J3" H 1000 2900 50  0000 C CNN
 F 1 "LED_CON_WW" H 850 3050 50  0000 C CNN
-F 2 "" H 850 2950 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 850 2950 50  0001 C CNN
 F 3 "~" H 850 2950 50  0001 C CNN
 	1    850  2950
 	-1   0    0    1   
