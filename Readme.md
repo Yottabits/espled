@@ -6,8 +6,8 @@
 
 
 ##What can it do?
-* Controll RGB-LED strip
-* 
+* Controle RGB-LED strip
+* Controle RGBWW
 
 ##Scematic
 
@@ -15,4 +15,13 @@
 
 ##How to use it?
 
-###How to use it in 5V Mode with 
+###How to use it in 12V Mode with RGB
+Hardware: 
+* You only need to 
+Software:
+* Set define mode to blabla
+
+
+###How to use it in 5V Mode with WS2812
+*
+
