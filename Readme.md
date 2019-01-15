@@ -10,7 +10,7 @@
 * Measure surrounding Temperature
 * Sound-2-Light trough integrated Microphone
 
-##How does it look like?
+## How does it look like?
 ![3D-View](/Doku/3d-view-1.jpeg)
 ![3D-View](/Doku/3d-view-2.jpeg)
 
@@ -22,6 +22,7 @@
 ### How to use it in 12V Mode with RGBWW
 Hardware: 
 * You only need to insert as many MOSFETS (IRLZ34N) as you want to controle Channels
+
 Software:
 * Set define the number of Channels
 
@@ -29,6 +30,7 @@ Software:
 ### How to use it in 5V Mode with WS2812
 Hardware: 
 * You only need to 
+
 Software:
 * Set define mode to blabla
 
@@ -36,6 +38,7 @@ Software:
 ### How to use it in 5V Mode with APA102
 Hardware: 
 * You only need to 
+
 Software:
 * Set define mode to blabla
 
@@ -55,10 +58,12 @@ Software:
 |      10      |                  |          |
 
 
-##Which paarts do I need?
+## Which paarts do I need?
 
 
-##Todo:
+## Todo:
 * Silcscreen
-** Namen
-** Bus-Ions
+    * Namen
+    * Bus-Icons
+* Software
+* Case
