@@ -1,0 +1,3 @@
+[submodule "software/lib/ESP8266_new_pwm"]
+	path = software/lib/ESP8266_new_pwm
+	url = https://github.com/StefanBruens/ESP8266_new_pwm
