@@ -11,11 +11,11 @@
 * Sound-2-Light trough integrated Microphone
 
 ## How does it look like?
-![3D-View](/Doc/3d-view-1.jpeg)
-![3D-View](/Doc/3d-view-2.jpeg)
+![3D-View](/doc/3d-view-1.jpeg)
+![3D-View](/doc/3d-view-2.jpeg)
 
 ## How does the Pinning look like?
-![3D-View](/Doc/Pinout.png)
+![3D-View](/doc/Pinout.png)
 
 ## How to use it?
 
