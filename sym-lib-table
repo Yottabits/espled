@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name ESPLED-rescue)(type Legacy)(uri ${KIPRJMOD}/ESPLED-rescue.lib)(options "")(descr ""))
-)
