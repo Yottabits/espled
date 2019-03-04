@@ -5,52 +5,75 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
+#include <PubSubClient.h>
+#include <pwm.c>
 
 #define pinR 16
 #define pinG 5
 #define pinB 14
 #define pinM 2
+#define pinWW 12
+#define pinCW 13
 
+const char* mqtt_server = "broker.mqtt-dashboard.com";
+const char* mqtt_device_id = "/rgbController/";
+const unsigned int mqtt_port = 1883;
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+long lastMsg = 0;
+char msg[50];
+int value = 0;
 
 typedef struct{
   int r, g, b;
 } ColorValue;
+
 ColorValue currentRGB;
 ColorValue finalRGB;
 
+WiFiManager wifiManager;
 
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
 
-void handleFade(){
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
 
+  Serial.println();
 }
 
-
-void initPins(){
-  pinMode(pinR, OUTPUT);
-  pinMode(pinG, OUTPUT);
-  pinMode(pinB, OUTPUT);
-  pinMode(pinWW, OUTPUT);
-  pinMoce(pinCW, OUTPUT);
-
-  pinMode(pinM, INPUT_PULLUP);
-
-  digitalWrite(pinR, LOW);
-  digitalWrite(pinG, LOW);
-  digitalWrite(pinB, LOW);
-  digitalWrite(pinWW, LOW);
-  digitalWrite(pinCW, LOW);
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected())
+  {
+    Serial.print("Attempting MQTT connection...");
+    // Create a random client ID
+    String clientId = "RGB-Controller";
+    // Attempt to connect
+    if (client.connect(clientId.c_str())) {
+      Serial.println("connected");
+      //client.publish("outTopic", "hello world");
+      //client.subscribe("inTopic");
+    }
+    else
+    {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
 }
-void setup() {
-  initPins();
 
-  Serial.begin(115200);
-  Serial.println("Booting");
+void handleFade(){}
 
-  delay(500);
-
-  WiFiManager wifiManager;
-
-
+void initWifi(){
   if(digitalRead(pinM) == LOW){
     wifiManager.resetSettings();
     digitalWrite(pinB, HIGH);
@@ -61,6 +84,11 @@ void setup() {
   wifiManager.autoConnect("RGB Controller Setup");
   wifiManager.setConfigPortalTimeout(180);
 
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+}
+
+void initOta(){
   //TODO: Password
   //Init OTA update routine
   ArduinoOTA.onStart([]() {
@@ -93,14 +121,42 @@ void setup() {
     }
   });
   ArduinoOTA.begin();
+}
+
+void initPins(){
+  pinMode(pinR, OUTPUT);
+  pinMode(pinG, OUTPUT);
+  pinMode(pinB, OUTPUT);
+  pinMode(pinWW, OUTPUT);
+  pinMode(pinCW, OUTPUT);
+
+  pinMode(pinM, INPUT_PULLUP);
+
+  digitalWrite(pinR, LOW);
+  digitalWrite(pinG, LOW);
+  digitalWrite(pinB, LOW);
+  digitalWrite(pinWW, LOW);
+  digitalWrite(pinCW, LOW);
+}
+
+void setup(){
+  initPins();
+
+  Serial.begin(115200);
+  Serial.println("Booting");
+
+  delay(500);
+
+  initWifi();
+  initOta();
+
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
 void loop() {
-  //Main loop must run. Don't interrupt looping for a long time.
-  //Otherwise OTA update will not work
   ArduinoOTA.handle();
-  delay(500);
+  reconnect();
+
 }
