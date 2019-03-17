@@ -30,6 +30,30 @@ typedef struct{
   int r, g, b;
 } ColorValue;
 
+#define PWM_CHANNELS 5
+const uint32_t period = 5000; // * 200ns ^= 1 kHz
+
+// PWM setup
+uint32 io_info[PWM_CHANNELS][3] = {
+	// MUX, FUNC, PIN
+	{PERIPHS_IO_MUX_MTDI_U,  FUNC_GPIO12, 12},
+	{PERIPHS_IO_MUX_MTDO_U,  FUNC_GPIO15, 15},
+	{PERIPHS_IO_MUX_MTCK_U,  FUNC_GPIO13, 13},
+	{PERIPHS_IO_MUX_MTMS_U,  FUNC_GPIO14, 14},
+	{PERIPHS_IO_MUX_GPIO5_U, FUNC_GPIO5 ,  5},
+};
+
+// initial duty: all off
+uint32 pwm_duty_init[PWM_CHANNELS] = {0, 0, 0, 0, 0};
+/*
+pwm_init(period, pwm_duty_init, PWM_CHANNELS, io_info);
+pwm_start();
+
+// do something like this whenever you want to change duty
+pwm_set_duty(500, 1);  // GPIO15: 10%
+pwm_set_duty(5000, 1); // GPIO15: 100%
+pwm_start();           // commit
+*/
 ColorValue currentRGB;
 ColorValue finalRGB;
 
@@ -147,8 +171,8 @@ void setup(){
 
   delay(500);
 
-  initWifi();
-  initOta();
+  //initWifi();
+  //initOta();
 
   Serial.println("Ready");
   Serial.print("IP address: ");
@@ -156,7 +180,32 @@ void setup(){
 }
 
 void loop() {
-  ArduinoOTA.handle();
-  reconnect();
+  //ArduinoOTA.handle();
+  for(int i=0; i<1023; i++){
+    analogWrite(pinR, i);
+    delay(1);
+  }
+  digitalWrite(pinR, LOW);
+  for(int i=0; i<1023; i++){
+    analogWrite(pinG, i);
+    delay(1);
+  }
+  digitalWrite(pinG, LOW);
+  for(int i=0; i<1023; i++){
+    analogWrite(pinB, i);
+    delay(1);
+  }
+  digitalWrite(pinB, LOW);
+  for(int i=0; i<1023; i++){
+    analogWrite(pinWW, i);
+    delay(1);
+  }
+  digitalWrite(pinWW, LOW);
+  for(int i=0; i<1023; i++){
+    analogWrite(pinCW, i);
+    delay(1);
+  }
+  digitalWrite(pinCW, LOW);
+  //reconnect();
 
 }
