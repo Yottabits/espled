@@ -7,7 +7,7 @@
 ![StripControle](/doc/StripControle.jpg)
 ## Solution to the double class problem
 
-```
+```cpp
 //Setup
 FastLed* fastLed;
 StripControle* stripControle;
