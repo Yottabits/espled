@@ -79,9 +79,11 @@ Software:
 |105|Moving Parts|Small x-LED long "Parts" travel from centerpos(=Startpos) - to the end(s) of the strip|RGBWW-value, update rate, centerposition, |
 
 
+
 ## Todo:
 * Silcscreen
     * Namen
     * Bus-Icons
 * Software
 * Case
+* GoodListOfAnimations for individually addressable strips: https://www.tweaking4all.com/hardware/arduino/arduino-all-ledstrip-effects-in-one/
