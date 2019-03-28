@@ -63,15 +63,15 @@ Software:
 ## Suggested MODES
 
 | Modenumber   |        Name      | Description | used-Arguments-from-Var-Silo |
-|--------------|------------------|-------------| |
+|--------------|------------------|-------------|----------------------------- |
 |       1      |  Fade to color   |  Also used for jumps -> time = 0           | RGBWW-value, Transitiontime |
-|       2      |  Blink color     |  Stores current State (Mode and color), Fades to color and back | RgBWW-value, Transition time, OnTime |
+|       2      |  Blink color     |  Stores current State, Fades to color and back | RgBWW-value, Transition time, OnTime |
 |       3      |  Strobe          |  Strobe selectable color and Freq   | RGBWW-value, Freq |
 |       4      |  Sound2LIGHT     |  adjust brightness according to soundvalue  | RGbWW-value, sensivitity |
-|       5      |                  |          | |
-|       6      |                  |          | |
-|       7      |                  |          | |
-|       8      |                  |          | |
+|       5      |                  |              | |
+|       6      |                  |              | |
+|       7      |                  |              | |
+|       8      |                  |              | |
 |       101    |  Lagerfeuer Animation  |          | centerposition |
 |      102     |  Noise                 |          | |
 |      103     |  VU-Meter              |          | RGbWW, Sensitivity, update rate, centerposition |
