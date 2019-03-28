@@ -65,17 +65,18 @@ Software:
 | Modenumber   |        Name      | Description | used-Arguments-from-Var-Silo|
 |--------------|------------------|-------------|-----------------------------|
 |1|  Fade to color   |  Also used for jumps -> time = 0           | RGBWW-value, Transitiontime |
-|2|  Blink color     |  Stores current State, Fades to color and back | RgBWW-value, Transition time, OnTime |
+|2|  Blink color     |  Stores current State, Fades to color and back - Maybe posibility of selectiong number of blinks | RGBWW-value, Transition time, OnTime, NumOfBlinks |
 |3|Strobe|Strobe selectable color and Freq|RGBWW-value, Freq |
-|4|Sound2LIGHT|adjust brightness according to soundvalue|RGbWW-value, sensivitity |
+|4|Sound2LIGHT|adjust brightness according to soundvalue|RGBWW-value, sensivitity |
 |5||||
 |6||||
 |7||||
 |8||||
-|101|Lagerfeuer Animation||centerposition|
-|102|Noise|||
-|103|VU-Meter|| RGbWW, Sensitivity, update rate, centerposition |
-
+|101|Lagerfeuer Animation|(gibt es online fertig)|centerposition|
+|102|Noise||RGBWW,update Rate|
+|103|VU-Meter|| RGbWW, Sensitivity, update rate, centerposition|
+|104|StrobeParts|Small x-LED long "Parts" light up in strobe mode|RGBWW, Freq, centerposition, PartLength|
+|105|Moving Parts|Small x-LED long "Parts" travel from centerpos(=Startpos) - to the end(s) of the strip|RGBWW-value, update rate, centerposition, |
 
 
 ## Todo:
