@@ -1,3 +1,4 @@
+//--Includes--------------------------------------------------------------------
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
@@ -6,25 +7,39 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
-#include <pwm.c>
+//#include <pwm.c>
+//--Includes--------------------------------------------------------------------
 
+
+//--PinDefines------------------------------------------------------------------
 #define pinR 16
 #define pinG 5
 #define pinB 14
 #define pinM 2
 #define pinWW 12
 #define pinCW 13
+//------------------------------------------------------------------------------
 
 const char* mqtt_server = "broker.mqtt-dashboard.com";
 const char* mqtt_device_id = "/rgbController/";
 const unsigned int mqtt_port = 1883;
 
 WiFiClient espClient;
+WiFiManager wifiManager;
 PubSubClient client(espClient);
+
+
 
 long lastMsg = 0;
 char msg[50];
 int value = 0;
+
+
+
+
+
+
+
 
 typedef struct{
   int r, g, b;
@@ -57,7 +72,7 @@ pwm_start();           // commit
 ColorValue currentRGB;
 ColorValue finalRGB;
 
-WiFiManager wifiManager;
+
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -163,16 +178,20 @@ void initPins(){
   digitalWrite(pinCW, LOW);
 }
 
+
+
+
 void setup(){
   initPins();
 
   Serial.begin(115200);
+  delay(50);
   Serial.println("Booting");
 
   delay(500);
 
-  //initWifi();
-  //initOta();
+  initWifi();
+  initOta();
 
   Serial.println("Ready");
   Serial.print("IP address: ");
@@ -180,32 +199,34 @@ void setup(){
 }
 
 void loop() {
-  //ArduinoOTA.handle();
-  for(int i=0; i<1023; i++){
-    analogWrite(pinR, i);
-    delay(1);
-  }
-  digitalWrite(pinR, LOW);
-  for(int i=0; i<1023; i++){
-    analogWrite(pinG, i);
-    delay(1);
-  }
-  digitalWrite(pinG, LOW);
-  for(int i=0; i<1023; i++){
-    analogWrite(pinB, i);
-    delay(1);
-  }
-  digitalWrite(pinB, LOW);
-  for(int i=0; i<1023; i++){
-    analogWrite(pinWW, i);
-    delay(1);
-  }
-  digitalWrite(pinWW, LOW);
-  for(int i=0; i<1023; i++){
-    analogWrite(pinCW, i);
-    delay(1);
-  }
-  digitalWrite(pinCW, LOW);
-  //reconnect();
+  ArduinoOTA.handle();
+
+
+  // for(int i=0; i<1023; i++){
+  //   analogWrite(pinR, i);
+  //   delay(1);
+  // }
+  // digitalWrite(pinR, LOW);
+  // for(int i=0; i<1023; i++){
+  //   analogWrite(pinG, i);
+  //   delay(1);
+  // }
+  // digitalWrite(pinG, LOW);
+  // for(int i=0; i<1023; i++){
+  //   analogWrite(pinB, i);
+  //   delay(1);
+  // }
+  // digitalWrite(pinB, LOW);
+  // for(int i=0; i<1023; i++){
+  //   analogWrite(pinWW, i);
+  //   delay(1);
+  // }
+  // digitalWrite(pinWW, LOW);
+  // for(int i=0; i<1023; i++){
+  //   analogWrite(pinCW, i);
+  //   delay(1);
+  // }
+  // digitalWrite(pinCW, LOW);
+  // //reconnect();
 
 }
