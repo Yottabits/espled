@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
+#include <string.h>
 #include <ArduinoOTA.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
@@ -100,14 +101,26 @@ void reconnect() {
   // Loop until we're reconnected
   while (!client.connected())
   {
-    Serial.print("Attempting MQTT connection...");
+    Serial.println("Attempting MQTT connection with:");
+    Serial.println(mqtt_server);
+    Serial.println(atoi(mqtt_port));
     // Create a random client ID
     String clientId = "RGB-Controller";
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
+      char mainTopic[80] = "/ESPLED/";
+      strcat(mainTopic, WiFi.macAddress().c_str());
+      Serial.print("Main Topic: ");
+      Serial.println(mainTopic);
+
       Serial.println("connected");
-      //client.publish("outTopic", "hello world");
-      //client.subscribe("inTopic");
+
+      char readyTopic[80];
+      strcat(readyTopic, mainTopic);
+      strcat(readyTopic, "/status");
+
+      client.publish(readyTopic, "ready");
+      client.subscribe(mainTopic);
     }
     else
     {
@@ -281,6 +294,7 @@ void setup(){
 
   initFS();
   initWifi();
+  reconnect();
   initOta();
 
   Serial.println("Ready");
@@ -318,5 +332,5 @@ void loop() {
   // }
   // digitalWrite(pinCW, LOW);
   // //reconnect();
-
+  client.loop();
 }
