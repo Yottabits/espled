@@ -25,6 +25,16 @@
 #define pinCW 13
 //------------------------------------------------------------------------------
 
+typedef struct{
+  unsigned byte mode;
+  CRGBWW colorValue;
+  unsigned int time;
+  unsigned int frequency;
+  unsigned byte sensitivity;
+  unsigned int position;
+  unsigned int length;
+} varSilo;
+
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
@@ -75,7 +85,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
 }
 
-void reconnect() {
+void initMQTT() {
   // Loop until we're reconnected
   while (!client.connected())
   {
@@ -110,8 +120,6 @@ void reconnect() {
     }
   }
 }
-
-void handleFade(){}
 
 void initWifi(){
   if(digitalRead(pinM) == LOW){
@@ -272,7 +280,7 @@ void setup(){
 
   initFS();
   initWifi();
-  reconnect();
+  initMQTT();
   initOta();
 
   Serial.println("Ready");
