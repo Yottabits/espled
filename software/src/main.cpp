@@ -1,14 +1,16 @@
 //--Includes--------------------------------------------------------------------
+#include <FS.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
+#include <string.h>
 #include <ArduinoOTA.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
 #include <StripControle.h>
-
+#include <ArduinoJson.h>
 //#include <pwm.c>
 //--Includes--------------------------------------------------------------------
 
@@ -23,20 +25,34 @@
 #define pinCW 13
 //------------------------------------------------------------------------------
 
-const char* mqtt_server = "broker.mqtt-dashboard.com";
+
+char mqtt_server[40];
+char mqtt_port[6] = "8080";
+bool shouldSaveConfig = false;
+
+//const char* mqtt_server = "broker.mqtt-dashboard.com";
 const char* mqtt_device_id = "/rgbController/";
-const unsigned int mqtt_port = 1883;
+//const unsigned int mqtt_port = 1883;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
 PubSubClient client(espClient);
 
 
-long lastMsg = 0;
-char msg[50];
-int value = 0;
+//long lastMsg = 0;
+//char msg[50];
+//int value = 0;
 
-StripControle ledStrip;
+
+//callback notifying us of the need to save config
+void saveConfigCallback () {
+  Serial.println("Should save config");
+  shouldSaveConfig = true;
+}
+
+
+
+
 
 typedef struct{
   int r, g, b;
@@ -63,14 +79,26 @@ void reconnect() {
   // Loop until we're reconnected
   while (!client.connected())
   {
-    Serial.print("Attempting MQTT connection...");
+    Serial.println("Attempting MQTT connection with:");
+    Serial.println(mqtt_server);
+    Serial.println(atoi(mqtt_port));
     // Create a random client ID
     String clientId = "RGB-Controller";
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
+      char mainTopic[80] = "/ESPLED/";
+      strcat(mainTopic, WiFi.macAddress().c_str());
+      Serial.print("Main Topic: ");
+      Serial.println(mainTopic);
+
       Serial.println("connected");
-      //client.publish("outTopic", "hello world");
-      //client.subscribe("inTopic");
+
+      char readyTopic[80];
+      strcat(readyTopic, mainTopic);
+      strcat(readyTopic, "/status");
+
+      client.publish(readyTopic, "ready");
+      client.subscribe(mainTopic);
     }
     else
     {
@@ -92,6 +120,13 @@ void initWifi(){
     delay(500);
     digitalWrite(pinB, LOW);
   }
+  WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
+  WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
+
+  wifiManager.setSaveConfigCallback(saveConfigCallback);
+
+  wifiManager.addParameter(&custom_mqtt_server);
+  wifiManager.addParameter(&custom_mqtt_port);
 
   wifiManager.autoConnect("RGB Controller Setup");
   wifiManager.setConfigPortalTimeout(180);
@@ -100,9 +135,34 @@ void initWifi(){
   Serial.println("local ip");
   Serial.println(WiFi.localIP());
 
-  client.setServer(mqtt_server, mqtt_port);
+
+  strcpy(mqtt_server, custom_mqtt_server.getValue());
+  strcpy(mqtt_port, custom_mqtt_port.getValue());
+
+  //save the custom parameters to FS
+  if (shouldSaveConfig) {
+    Serial.println("saving config");
+
+    DynamicJsonDocument doc(4000);
+    JsonObject json = doc.to<JsonObject>();
+
+    json["mqtt_server"] = mqtt_server;
+    json["mqtt_port"] = mqtt_port;
+
+    File configFile = SPIFFS.open("/config.json", "w");
+    if (!configFile) {
+      Serial.println("failed to open config file for writing");
+    }
+
+    serializeJson(json, Serial);
+    serializeJson(json, configFile);
+    configFile.close();
+    //end save
+  }
+  client.setServer(mqtt_server, atoi(mqtt_port));
   client.setCallback(callback);
 }
+
 
 void initOta(){
   //TODO: Password
@@ -139,6 +199,49 @@ void initOta(){
   ArduinoOTA.begin();
 }
 
+void initFS(){
+  Serial.println("mounting FS...");
+
+  if (SPIFFS.begin()) {
+    Serial.println("mounted file system");
+    if (SPIFFS.exists("/config.json")) {
+      //file exists, reading and loading
+      Serial.println("reading config file");
+      File configFile = SPIFFS.open("/config.json", "r");
+      if (configFile) {
+        Serial.println("opened config file");
+        size_t size = configFile.size();
+        // Allocate a buffer to store contents of the file.
+        std::unique_ptr<char[]> buf(new char[size]);
+
+        configFile.readBytes(buf.get(), size);
+
+        DynamicJsonDocument doc(2000);
+        DeserializationError error = deserializeJson(doc, buf.get());
+        if (error) {
+        }
+        JsonObject json = doc.as<JsonObject>();
+
+
+
+        serializeJson(json, Serial);
+        if (!json.isNull()) {
+          Serial.println("\nparsed json");
+
+          strcpy(mqtt_server, json["mqtt_server"]);
+          strcpy(mqtt_port, json["mqtt_port"]);
+
+        } else {
+          Serial.println("failed to load json config");
+        }
+        configFile.close();
+      }
+    }
+  } else {
+    Serial.println("failed to mount FS");
+  }
+}
+
 void initPins(){
   pinMode(pinR, OUTPUT);
   pinMode(pinG, OUTPUT);
@@ -167,7 +270,9 @@ void setup(){
 
   delay(500);
 
+  initFS();
   initWifi();
+  reconnect();
   initOta();
 
   Serial.println("Ready");
@@ -205,5 +310,5 @@ void loop() {
   // }
   // digitalWrite(pinCW, LOW);
   // //reconnect();
-
+  client.loop();
 }
