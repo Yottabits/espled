@@ -5,8 +5,9 @@
 
 ## Class __StripControle__
 ![StripControle](/doc/StripControle.jpg)
-## Solution to the double class problem
 
+
+## Solution to the double class problem
 ```cpp
 //Setup
 FastLed* fastLed;
@@ -54,3 +55,11 @@ else
   }
 }
 ```
+
+## AnnimationHandlers
+* Inside the Cases Methods of the Class AnimationHandlerPWM or AnimationHandlerBus should be called
+* Example: animationHandlerBus.fade(Color,time)
+* All current state Informations for timing-sensitive Modes should be stored in the AnnimationHandler-Object
+* For Timing-Measurements we use the millis-command
+* For Accessing the LEDs both AnimationHandlers hold attributes of the Type FastLedEndpoint and StripControleEndpoint which do the lower Level Stuff
+* All Modes implemented in the AnimationHandlerPWM should also be Implemented in the AnimationHandlerBus
