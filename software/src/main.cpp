@@ -26,11 +26,11 @@
 //------------------------------------------------------------------------------
 
 typedef struct{
-  unsigned byte mode;
+  unsigned char mode;
   CRGBWW colorValue;
   unsigned int time;
   unsigned int frequency;
-  unsigned byte sensitivity;
+  unsigned char sensitivity;
   unsigned int position;
   unsigned int length;
 } varSilo;
