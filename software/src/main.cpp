@@ -112,6 +112,12 @@ void reconnect() {
 
 void handleFade(){}
 
+
+
+  Serial.println("local ip");
+  Serial.println(WiFi.localIP());
+}
+
 void initWifi(){
   if(digitalRead(pinM) == LOW){
     wifiManager.resetSettings();
