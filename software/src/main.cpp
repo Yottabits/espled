@@ -111,12 +111,6 @@ void reconnect() {
 
 void handleFade(){}
 
-
-
-  Serial.println("local ip");
-  Serial.println(WiFi.localIP());
-}
-
 void initWifi(){
   if(digitalRead(pinM) == LOW){
     wifiManager.resetSettings();
@@ -127,6 +121,10 @@ void initWifi(){
 
   wifiManager.autoConnect("RGB Controller Setup");
   wifiManager.setConfigPortalTimeout(180);
+
+  //After the WiFi Manger is done, we are most probably connected
+  Serial.println("local ip");
+  Serial.println(WiFi.localIP());
 
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
