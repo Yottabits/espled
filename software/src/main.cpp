@@ -29,7 +29,6 @@ WiFiManager wifiManager;
 PubSubClient client(espClient);
 
 
-
 long lastMsg = 0;
 char msg[50];
 int value = 0;
