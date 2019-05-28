@@ -152,7 +152,7 @@ void initWifi(){
   if (shouldSaveConfig) {
     Serial.println("saving config");
 
-    DynamicJsonDocument doc;
+    DynamicJsonDocument doc(4000);
     JsonObject json = doc.to<JsonObject>();
 
     json["mqtt_server"] = mqtt_server;
@@ -168,10 +168,10 @@ void initWifi(){
     configFile.close();
     //end save
   }
-  client.setServer(mqtt_server, mqtt_port);
+  client.setServer(mqtt_server, atoi(mqtt_port));
   client.setCallback(callback);
 }
-}
+
 
 void initOta(){
   //TODO: Password
@@ -225,7 +225,7 @@ void initFS(){
 
         configFile.readBytes(buf.get(), size);
 
-        DynamicJsonDocument doc;
+        DynamicJsonDocument doc(2000);
         DeserializationError error = deserializeJson(doc, buf.get());
         if (error) {
         }
@@ -239,7 +239,6 @@ void initFS(){
 
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
-          strcpy(blynk_token, json["blynk_token"]);
 
         } else {
           Serial.println("failed to load json config");
