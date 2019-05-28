@@ -1,4 +1,5 @@
 //--Includes--------------------------------------------------------------------
+#include <FS.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
@@ -7,6 +8,7 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 //#include <pwm.c>
 //--Includes--------------------------------------------------------------------
 
@@ -20,21 +22,30 @@
 #define pinCW 13
 //------------------------------------------------------------------------------
 
-const char* mqtt_server = "broker.mqtt-dashboard.com";
+
+char mqtt_server[40];
+char mqtt_port[6] = "8080";
+bool shouldSaveConfig = false;
+
+//const char* mqtt_server = "broker.mqtt-dashboard.com";
 const char* mqtt_device_id = "/rgbController/";
-const unsigned int mqtt_port = 1883;
+//const unsigned int mqtt_port = 1883;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
 PubSubClient client(espClient);
 
 
-long lastMsg = 0;
-char msg[50];
-int value = 0;
+//long lastMsg = 0;
+//char msg[50];
+//int value = 0;
 
 
-
+//callback notifying us of the need to save config
+void saveConfigCallback () {
+  Serial.println("Should save config");
+  shouldSaveConfig = true;
+}
 
 
 
@@ -118,6 +129,13 @@ void initWifi(){
     delay(500);
     digitalWrite(pinB, LOW);
   }
+  WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
+  WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
+
+  wifiManager.setSaveConfigCallback(saveConfigCallback);
+
+  wifiManager.addParameter(&custom_mqtt_server);
+  wifiManager.addParameter(&custom_mqtt_port);
 
   wifiManager.autoConnect("RGB Controller Setup");
   wifiManager.setConfigPortalTimeout(180);
@@ -126,8 +144,33 @@ void initWifi(){
   Serial.println("local ip");
   Serial.println(WiFi.localIP());
 
+
+  strcpy(mqtt_server, custom_mqtt_server.getValue());
+  strcpy(mqtt_port, custom_mqtt_port.getValue());
+
+  //save the custom parameters to FS
+  if (shouldSaveConfig) {
+    Serial.println("saving config");
+
+    DynamicJsonDocument doc;
+    JsonObject json = doc.to<JsonObject>();
+
+    json["mqtt_server"] = mqtt_server;
+    json["mqtt_port"] = mqtt_port;
+
+    File configFile = SPIFFS.open("/config.json", "w");
+    if (!configFile) {
+      Serial.println("failed to open config file for writing");
+    }
+
+    serializeJson(json, Serial);
+    serializeJson(json, configFile);
+    configFile.close();
+    //end save
+  }
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
+}
 }
 
 void initOta(){
@@ -165,6 +208,50 @@ void initOta(){
   ArduinoOTA.begin();
 }
 
+void initFS(){
+  Serial.println("mounting FS...");
+
+  if (SPIFFS.begin()) {
+    Serial.println("mounted file system");
+    if (SPIFFS.exists("/config.json")) {
+      //file exists, reading and loading
+      Serial.println("reading config file");
+      File configFile = SPIFFS.open("/config.json", "r");
+      if (configFile) {
+        Serial.println("opened config file");
+        size_t size = configFile.size();
+        // Allocate a buffer to store contents of the file.
+        std::unique_ptr<char[]> buf(new char[size]);
+
+        configFile.readBytes(buf.get(), size);
+
+        DynamicJsonDocument doc;
+        DeserializationError error = deserializeJson(doc, buf.get());
+        if (error) {
+        }
+        JsonObject json = doc.as<JsonObject>();
+
+
+
+        serializeJson(json, Serial);
+        if (!json.isNull()) {
+          Serial.println("\nparsed json");
+
+          strcpy(mqtt_server, json["mqtt_server"]);
+          strcpy(mqtt_port, json["mqtt_port"]);
+          strcpy(blynk_token, json["blynk_token"]);
+
+        } else {
+          Serial.println("failed to load json config");
+        }
+        configFile.close();
+      }
+    }
+  } else {
+    Serial.println("failed to mount FS");
+  }
+}
+
 void initPins(){
   pinMode(pinR, OUTPUT);
   pinMode(pinG, OUTPUT);
@@ -193,6 +280,7 @@ void setup(){
 
   delay(500);
 
+  initFS();
   initWifi();
   initOta();
 
