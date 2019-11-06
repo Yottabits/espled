@@ -44,18 +44,18 @@ Software:
 
 
 ## What controle the Jumpers?
-| Jumpernumber | Connects-Between | Function |
-|--------------|------------------|----------|
-|       1      |                  |          |
-|       2      |                  |          |
-|       3      |                  |          |
-|       4      |                  |          |
-|       5      |                  |          |
-|       6      |                  |          |
-|       7      |                  |          |
-|       8      |                  |          |
-|       9      |                  |          |
-|      10      |                  |          |
+| Jumpernumber | Connects-Between | Function         |
+|--------------|------------------|------------------|
+|       1      |Q1 Signal - Q1 Out| WS2812, APA102                  |
+|       2      |Q2 Signal - Q2 Out| APA102           |
+|       3      |Q3 Signal - Q3 Out|                  |
+|       4      |Q4 Signal - Q4 Out|                  |
+|       5      |Q5 Signal - Q5 Out|                  |
+|       6      |   IO13 - Q1      | RGB, RGBW, RGBWW |
+|       7      |   IO12 - Q2      | RGB, RGBW, RGBWW |
+|       8      |   IO14 - Q3      | RGB, RGBW, RGBWW |
+|       9      |   IO16 - Q4      | RGBW, RGBWW      |
+|      10      |   IO5 - Q5       | RGBWW            |
 
 
 ## Which paarts do I need?
