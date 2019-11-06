@@ -20,27 +20,27 @@
 ## How to use it?
 
 ### How to use it in 12V Mode with RGBWW
-Hardware: 
-* You only need to insert as many MOSFETS (IRLZ34N) as you want to controle Channels
+Hardware:
+* You only need to insert as many MOSFETS (IRLZ34N) as you want to controle Channels. Bridge the jumpers according to the table below
 
 Software:
-* Set define the number of Channels
+* Boot into configuration mode (see software README) and change the "LED Type" to "RGB", "RGBW" or "RGBWW" for 3, 4 or 5 active channels.
 
 
 ### How to use it in 5V Mode with WS2812
-Hardware: 
-* You only need to 
+Hardware:
+* Just bridge the Jumpers according to the table below.
 
 Software:
-* Set define mode to blabla
+* Boot into configuration mode (see software README) and change the "LED Type" to "WS2812".
 
 
 ### How to use it in 5V Mode with APA102
-Hardware: 
-* You only need to 
+Hardware:
+* Just bridge the Jumpers according to the table below.
 
 Software:
-* Set define mode to blabla
+* Boot into configuration mode (see software README) and change the "LED Type" to "APA102".
 
 
 ## What controle the Jumpers?
@@ -81,9 +81,9 @@ Software:
 
 
 ## Todo:
-* Silcscreen
-    * Namen
-    * Bus-Icons
+* hardware
+  - Change micro-USB footprint or BOM
 * Software
+  - Add all options to configuration mode
 * Case
 * GoodListOfAnimations for individually addressable strips: https://www.tweaking4all.com/hardware/arduino/arduino-all-ledstrip-effects-in-one/
