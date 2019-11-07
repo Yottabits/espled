@@ -58,7 +58,8 @@ Software:
 |      10      |   IO5 - Q5       | RGBWW            |
 
 
-## Which paarts do I need?
+## Which parts do I need?
+See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 
 ## Suggested MODES
 
