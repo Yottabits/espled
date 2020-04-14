@@ -36,6 +36,9 @@ typedef struct{
   unsigned int length;
 } varSilo;
 
+//init verSilo
+
+varSilo Silo;
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
@@ -78,6 +81,24 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 
   Serial.println();
+
+  //use Stack
+  StaticJsonDocument<256> doc;
+  //use Heap
+  //DynamicJsonDocument doc(2048);
+  
+  deserializeJson(doc, payload, length);
+
+  Silo.mode = doc["mode"];
+  //Silo.colorValue = doc["mode"];
+  Silo.time = doc["time"];
+  Silo.frequency = doc["frequency"];
+  Silo.sensitivity = doc["sensitivity"];
+  Silo.length = doc["length"];
+  Silo.position = doc["position"];
+  
+  Serial.print(Silo.mode, Silo.time)
+
 }
 
 void initMQTT() {
