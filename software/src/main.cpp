@@ -60,17 +60,12 @@ void saveConfigCallback () {
   shouldSaveConfig = true;
 }
 
-
-
-
-
 typedef struct{
   int r, g, b;
 } ColorValue;
 
 ColorValue currentRGB;
 ColorValue finalRGB;
-
 
 
 void callback(char* topic, byte* payload, unsigned int length) {
