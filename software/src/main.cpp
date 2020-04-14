@@ -9,6 +9,7 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
+#include <Definitions.h>
 #include <StripControle.h>
 #include <ArduinoJson.h>
 //#include <pwm.c>
@@ -24,17 +25,6 @@
 #define pinWW 12
 #define pinCW 13
 //------------------------------------------------------------------------------
-
-
-typedef struct{
-  unsigned char mode;
-  CRGBWW colorValue;
-  unsigned int time;
-  unsigned int frequency;
-  unsigned char sensitivity;
-  unsigned int position;
-  unsigned int length;
-} varSilo;
 
 //init verSilo
 
@@ -62,14 +52,6 @@ void saveConfigCallback () {
   shouldSaveConfig = true;
 }
 
-typedef struct{
-  int r, g, b;
-} ColorValue;
-
-ColorValue currentRGB;
-ColorValue finalRGB;
-
-
 //WARNING: If received json incomplete, increase MQTT_MAX_PACKET_SIZE in PubSunClient Library
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -83,10 +65,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println();
 
   //use Stack
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<1024> doc;
   //use Heap
   //DynamicJsonDocument doc(2048);
-  
+
   deserializeJson(doc, payload, length);
 
   Silo.mode = doc["mode"];
@@ -96,8 +78,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Silo.sensitivity = doc["sensitivity"];
   Silo.length = doc["length"];
   Silo.position = doc["position"];
-  
-  Serial.print(Silo.mode, Silo.time)
+
+  Serial.print(Silo.mode, Silo.time);
 
 }
 

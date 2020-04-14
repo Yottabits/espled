@@ -1,8 +1,10 @@
-#include <Arduino.h>
 
-typedef struct {
-  unsigned int R, G, B, CW, WW;
-} CRGBWW;
+#ifndef Definitions_h
+#define Definitions_h
+
+#include <Arduino.h>
+#include <Definitions.h>
+
 
 class StripControle{
 public:
@@ -20,3 +22,5 @@ private:
   CRGBWW RGBWW2RGBW();
   CRGBWW RGBWW2RGB();
 };
+
+#endif 
