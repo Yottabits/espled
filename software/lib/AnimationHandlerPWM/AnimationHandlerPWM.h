@@ -1,6 +1,9 @@
+#include Definitions.h
+
 class AnimationHandlerPWM{
 public:
-  void fade(CRGBWW value,double transitionTime);
+  void AnimationHandlerPWM::handle(varSilo silo);
 private:
 
 };
+
