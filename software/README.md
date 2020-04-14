@@ -15,3 +15,25 @@ To enter the configuration mode, perform the following tasks:
 - Release the __mode__ button within 2 seconds
 
 After sucessfully entering the configuration mode, use your smartphone or computer to connect to the wireless network called "ESPLED config" and follow the screen.
+
+## Control LEDs
+There are three different interfaces to connect to the controller.
+*MQTT
+*REST API
+*On-Board-Button
+
+### MQTT
+The different functions of the controller are available under the following MQTT topics
+
+|   Function   |       Topic      |      Values      |
+|--------------|------------------|------------------|
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |
+|              |                  |                  |

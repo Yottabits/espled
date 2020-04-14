@@ -25,6 +25,7 @@
 #define pinCW 13
 //------------------------------------------------------------------------------
 
+
 typedef struct{
   unsigned char mode;
   CRGBWW colorValue;
@@ -40,9 +41,7 @@ char mqtt_server[40];
 char mqtt_port[6] = "8080";
 bool shouldSaveConfig = false;
 
-//const char* mqtt_server = "broker.mqtt-dashboard.com";
 const char* mqtt_device_id = "/rgbController/";
-//const unsigned int mqtt_port = 1883;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
@@ -68,12 +67,13 @@ ColorValue currentRGB;
 ColorValue finalRGB;
 
 
+//WARNING: If received json incomplete, increase MQTT_MAX_PACKET_SIZE in PubSunClient Library
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
-  Serial.print("] ");
-
-  for (int i = 0; i < length; i++) {
+  Serial.print("] with length ");
+  Serial.print(length);
+  for (unsigned int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
 
@@ -285,7 +285,6 @@ void setup(){
 
 void loop() {
   ArduinoOTA.handle();
-
 
   // for(int i=0; i<1023; i++){
   //   analogWrite(pinR, i);
