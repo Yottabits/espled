@@ -23,7 +23,8 @@
 
 //init verSilo
 
-varSilo Silo;
+//ToDo Fix typo
+varSilo* Silo;
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
@@ -70,19 +71,41 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   deserializeJson(doc, payload, length);
 
-  Silo.mode = doc["mode"];
-  Silo.colorValue.R = doc["color"][0];
-  Silo.colorValue.G = doc["color"][1];
-  Silo.colorValue.B = doc["color"][2];
-  Silo.colorValue.CW = doc["color"][3];
-  Silo.colorValue.WW = doc["color"][4];
-  Silo.time = doc["time"];
-  Silo.frequency = doc["frequency"];
-  Silo.sensitivity = doc["sensitivity"];
-  Silo.length = doc["length"];
-  Silo.position = doc["position"];
+  Silo->mode = doc["mode"];
+  Silo->colorValue.R = doc["color"][0];
+  Silo->colorValue.G = doc["color"][1];
+  Silo->colorValue.B = doc["color"][2];
+  Silo->colorValue.CW = doc["color"][3];
+  Silo->colorValue.WW = doc["color"][4];
+  Silo->time = doc["time"];
+  Silo->frequency = doc["frequency"];
+  Silo->sensitivity = doc["sensitivity"];
+  Silo->length = doc["length"];
+  Silo->position = doc["position"];
 
-  Serial.print(Silo.mode, Silo.time);
+  Serial.println("Parsed Values");
+  Serial.print("Mode:");
+  Serial.println(Silo->mode);
+  Serial.print("R:");
+  Serial.println(Silo->colorValue.R);
+  Serial.println(" G:");
+  Serial.println(Silo->colorValue.G);
+  Serial.println(" B:");
+  Serial.println(Silo->colorValue.B);
+  Serial.println(" CW:");
+  Serial.println(Silo->colorValue.CW);
+  Serial.println(" WW:");
+  Serial.println(Silo->colorValue.WW);
+  Serial.print("Time:");
+  Serial.println(Silo->time);
+  Serial.print("Freq:");
+  Serial.println(Silo->frequency);
+  Serial.print("sensitivity:");
+  Serial.println(Silo->sensitivity);
+  Serial.print("length:");
+  Serial.println(Silo->length);
+  Serial.print("position:");
+  Serial.println(Silo->position);
 
 }
 
@@ -254,6 +277,7 @@ void initFS(){
   } else {
     Serial.println("failed to mount FS");
   }
+  Serial.println("Finished spiffs shit");
 }
 
 void initPins(){
@@ -280,8 +304,10 @@ void initStrip(){
   else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102;
 
   if(type < 6){
-    pwmHandler = new AnimationHandlerPWM(simpleStrip, &varSilo);
+    Serial.print("Annimation handler, strip and Silo initilized");
+    Silo = new varSilo();
     simpleStrip = new StripControle(type);
+    pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo);
   }
   else{
     //TODO
@@ -299,6 +325,12 @@ void runAnnimationHandler(){
   }
 }
 
+void debugFkt(String message){
+  //TODO define level enums
+  Serial.print(message);
+  //TODO
+  //Pub(message) on mqtt
+}
 
 void setup(){
   initPins();
@@ -313,6 +345,7 @@ void setup(){
   initWifi();
   initMQTT();
   initOta();
+  initStrip();
 
   Serial.println("Ready");
   Serial.print("IP address: ");
@@ -326,7 +359,7 @@ void loop() {
   //Run PWM Handler handle
   runAnnimationHandler();
 
-  if(str)
+  //if(str)
   //TODO: Reconnect
   client.loop();
 }
