@@ -1,3 +1,0 @@
-void sound2Light(){
-    
-}
