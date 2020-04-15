@@ -1,6 +1,6 @@
 #include "StripControle.h"
 
-void StripControle::showColor(){
+void StripControle::showColor(CRGBWW color){
 
 }
 

@@ -3,12 +3,12 @@
 #define Definitions_h
 
 #include <Arduino.h>
-#include <Definitions.h>
+#include <TypeDefinitions.h>
 
 
 class StripControle{
 public:
-  void showColor();
+  void showColor(CRGBWW);
   void off();
   CRGBWW getColor();
 
@@ -23,4 +23,4 @@ private:
   CRGBWW RGBWW2RGB();
 };
 
-#endif 
+#endif

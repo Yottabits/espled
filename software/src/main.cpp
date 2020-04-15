@@ -9,7 +9,8 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
-#include <Definitions.h>
+#include <TypeDefinitions.h>
+#include <PinDefinitions.h>
 #include <StripControle.h>
 #include <ArduinoJson.h>
 //#include <pwm.c>
@@ -17,14 +18,6 @@
 
 
 
-//--PinDefines------------------------------------------------------------------
-#define pinR 16
-#define pinG 5
-#define pinB 14
-#define pinM 2
-#define pinWW 12
-#define pinCW 13
-//------------------------------------------------------------------------------
 
 //init verSilo
 
@@ -72,7 +65,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   deserializeJson(doc, payload, length);
 
   Silo.mode = doc["mode"];
-  //Silo.colorValue = doc["mode"];
+  Silo.colorValue.R = doc["color"][0];
+  Silo.colorValue.G = doc["color"][1];
+  Silo.colorValue.B = doc["color"][2];
+  Silo.colorValue.CW = doc["color"][3];
+  Silo.colorValue.WW = doc["color"][4];
   Silo.time = doc["time"];
   Silo.frequency = doc["frequency"];
   Silo.sensitivity = doc["sensitivity"];
