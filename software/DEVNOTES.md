@@ -23,43 +23,13 @@ else
 {
   stripControle = new StripControle;
 }
-
-
-//Loop
-if(ledChipsetBased)
-{
-  switch(mode){
-    case 0:{
-      ...
-    }
-    case 1:{
-      ...
-    }
-    case 2:{
-      ...
-    }
-  }
-}
-else
-{
-  switch(mode){
-    case 0:{
-      ...
-    }
-    case 1:{
-      ...
-    }
-    case 2:{
-      ...
-    }
-  }
-}
 ```
 
 ## AnnimationHandlers
-* Inside the Cases Methods of the Class AnimationHandlerPWM or AnimationHandlerBus should be called
+* Both Classes AnimationHandlerPWM and AnimationHandlerBus have a method handle that is periodically called
+* This handler then periodically calls functions defining the modes (distinct for bus and non Bus Stips)
 * Example: animationHandlerBus.fade(Color,time)
-* All current state Informations for timing-sensitive Modes should be stored in the AnnimationHandler-Object
+* All current state Informations for timing-sensitive Modes is stored as static variables within their periodically called functions
 * For Timing-Measurements we use the millis-command
 * For Accessing the LEDs both AnimationHandlers hold attributes of the Type FastLedEndpoint and StripControleEndpoint which do the lower Level Stuff
 * All Modes implemented in the AnimationHandlerPWM should also be Implemented in the AnimationHandlerBus
