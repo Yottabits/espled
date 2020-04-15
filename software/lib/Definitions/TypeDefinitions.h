@@ -16,4 +16,5 @@ typedef struct{
   unsigned int length;
 } varSilo;
 
+enum stripType {RGB = 3, RGBW, RGBWW, WS2812, APA102};
 #endif

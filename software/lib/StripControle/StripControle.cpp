@@ -1,15 +1,19 @@
 #include "StripControle.h"
 
+StripControle::StripControle(stripType type){
+  this->type = type;
+}
+
 void StripControle::showColor(CRGBWW color){
   channelValue = color;
   recalculateColor();
 }
 
 void StripControle::recalculateColor(){
-  if(stripType == RGB){
+  if(type == RGB){
     channelValue = RGBWW2RGB();
   }
-  else if(stripType == RGBW){
+  else if(type == RGBW){
     channelValue = RGBWW2RGBW();
   }
 }

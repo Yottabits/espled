@@ -9,14 +9,15 @@
 
 class StripControle{
 public:
+
+  StripControle(stripType type);
   void showColor(CRGBWW);
   void off();
   CRGBWW getColor();
 
-
 private:
-  enum {RGB = 3, RGBW, RGBWW};
-  byte stripType;
+
+  stripType type;
   CRGBWW channelValue;
 
   CRGBWW RGBW2RGB();

@@ -12,6 +12,7 @@
 #include <TypeDefinitions.h>
 #include <PinDefinitions.h>
 #include <StripControle.h>
+#include <AnimationHandlerBus.h>
 #include <ArduinoJson.h>
 //#include <pwm.c>
 //--Includes--------------------------------------------------------------------
@@ -25,19 +26,23 @@ varSilo Silo;
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
+char strip_type[8] = "RGB";
+
+stripType type;
+
 bool shouldSaveConfig = false;
 
 const char* mqtt_device_id = "/rgbController/";
+
 
 WiFiClient espClient;
 WiFiManager wifiManager;
 PubSubClient client(espClient);
 
-
-//long lastMsg = 0;
-//char msg[50];
-//int value = 0;
-
+StripControle* simpleStrip;
+AnimationHandlerPWM* pwmHandler;
+AnimationHandlerBus* busHandler;
+//TODO: Adressable Strip
 
 //callback notifying us of the need to save config
 void saveConfigCallback () {
@@ -125,11 +130,13 @@ void initWifi(){
   }
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
+  WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
 
   wifiManager.setSaveConfigCallback(saveConfigCallback);
 
   wifiManager.addParameter(&custom_mqtt_server);
   wifiManager.addParameter(&custom_mqtt_port);
+  wifiManager.addParameter(&custom_strip_type);
 
   wifiManager.autoConnect("RGB Controller Setup");
   wifiManager.setConfigPortalTimeout(180);
@@ -141,6 +148,7 @@ void initWifi(){
 
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
+  strcpy(strip_type, custom_strip_type.getValue());
 
   //save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -151,6 +159,7 @@ void initWifi(){
 
     json["mqtt_server"] = mqtt_server;
     json["mqtt_port"] = mqtt_port;
+    json["strip_type"] = strip_type;
 
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {
@@ -233,6 +242,7 @@ void initFS(){
 
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
+          strcpy(strip_type, json["strip_type"]);
 
         } else {
           Serial.println("failed to load json config");
@@ -261,6 +271,22 @@ void initPins(){
   digitalWrite(pinCW, LOW);
 }
 
+void initStrip(){
+  if(strcmp(strip_type, "RGB") == 0) type = stripType::RGB;
+  else if(strcmp(strip_type, "RGBW") == 0) type = stripType::RGBW;
+  else if(strcmp(strip_type, "RGBWW") == 0) type = stripType::RGBWW;
+  else if(strcmp(strip_type, "WS2812") == 0) type = stripType::WS2812;
+  else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102;
+
+  if(type < 6){
+    pwmHandler = new AnimationHandlerPWM(simpleStrip, &varSilo);
+    simpleStrip = new StripControle(type);
+  }
+  else{
+    //TODO
+    //busHandler = new AnimationHandlerBus()
+  }
+}
 
 
 
@@ -286,31 +312,7 @@ void setup(){
 void loop() {
   ArduinoOTA.handle();
 
-  // for(int i=0; i<1023; i++){
-  //   analogWrite(pinR, i);
-  //   delay(1);
-  // }
-  // digitalWrite(pinR, LOW);
-  // for(int i=0; i<1023; i++){
-  //   analogWrite(pinG, i);
-  //   delay(1);
-  // }
-  // digitalWrite(pinG, LOW);
-  // for(int i=0; i<1023; i++){
-  //   analogWrite(pinB, i);
-  //   delay(1);
-  // }
-  // digitalWrite(pinB, LOW);
-  // for(int i=0; i<1023; i++){
-  //   analogWrite(pinWW, i);
-  //   delay(1);
-  // }
-  // digitalWrite(pinWW, LOW);
-  // for(int i=0; i<1023; i++){
-  //   analogWrite(pinCW, i);
-  //   delay(1);
-  // }
-  // digitalWrite(pinCW, LOW);
-  // //reconnect();
+  if(str)
+  //TODO: Reconnect
   client.loop();
 }
