@@ -1,5 +1,5 @@
-#ifndef Definitions_H
-#define Definitions_H
+#ifndef TYPEDEFINITIONS_H
+#define TYPEDEFINITIONS_H
 
 typedef struct {
   unsigned int R, G, B, CW, WW;
@@ -16,4 +16,4 @@ typedef struct{
   unsigned int length;
 } varSilo;
 
-#endif 
+#endif
