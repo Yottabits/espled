@@ -11,13 +11,14 @@ void AnimationHandlerPWM::handle(){
     //Switch Case that calls the apropriate Function for Handeling the currently selected Mode
     //All Modes are Implemented as one Function in the folder Modes
     
-    //Serial.println(silo->mode);
-    //Serial.println(silo->colorValue.R);
+    //Serial.print("Silo->time");
+    //Serial.println(silo->time);
+    
     
     static long lastChange = 0;
     static CRGBWW oldColor{0,0,0,0,0};
 
-    if(varSiloChanged){
+    if(*varSiloChanged){
         lastChange = millis();
         oldColor = strip->getColor();
         *varSiloChanged = false;

@@ -26,7 +26,9 @@
 //ToDo Fix typo
 varSilo* Silo;
 
-bool* varSiloChanged = false;
+bool* varSiloChanged = new bool(false);
+
+
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
@@ -354,6 +356,9 @@ void setup(){
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  simpleStrip->showColor(CRGBWW{0,1023,0,0,0});
+  delay(500);
+  simpleStrip->showColor(CRGBWW{0,0,0,0,0});
 }
 
 void loop() {
