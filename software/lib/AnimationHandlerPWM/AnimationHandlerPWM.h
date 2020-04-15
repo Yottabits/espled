@@ -1,11 +1,14 @@
-#include <TypeDefinitions.h>
+//#include <TypeDefinitions.h>
 #include <StripControle.h>
-#include "./Modes/Fade2Color.h"
+#include <Modes/modes.h>
 
 class AnimationHandlerPWM{
-public:
-  void AnimationHandlerPWM::handle(StripControle* strip, varSilo* silo);
-private:
-
+  public:
+    AnimationHandlerPWM(StripControle* strip, varSilo* silo);
+    void handle();
+    
+  private:
+    StripControle* strip;
+    varSilo* silo;
 };
 
