@@ -13,6 +13,7 @@
 #include <PinDefinitions.h>
 #include <StripControle.h>
 #include <AnimationHandlerBus.h>
+#include <AnimationHandlerPWM.h>
 #include <ArduinoJson.h>
 //#include <pwm.c>
 //--Includes--------------------------------------------------------------------
@@ -288,6 +289,15 @@ void initStrip(){
   }
 }
 
+void runAnnimationHandler(){
+  if(type < 6){
+    pwmHandler->handle();
+  }
+  else{
+    //TODO
+    //busHandler->handle();
+  }
+}
 
 
 void setup(){
@@ -310,7 +320,11 @@ void setup(){
 }
 
 void loop() {
+  //OTA Handler
   ArduinoOTA.handle();
+
+  //Run PWM Handler handle
+  runAnnimationHandler();
 
   if(str)
   //TODO: Reconnect

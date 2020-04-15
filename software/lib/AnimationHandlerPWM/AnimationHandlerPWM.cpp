@@ -1,11 +1,11 @@
-#include "AnnimationHandlerPWM.h"
-#include "Modes/Fade2Color.h"
+#include "AnimationHandlerPWM.h"
 
-void AnimationHandlerPWM::handle(varSilo Silo){
-    switch (mode)
+
+void AnimationHandlerPWM::handle(StripControle* strip, varSilo* silo){
+    switch (silo->mode)
     {
     case 0:
-        Fade2Color(Silo.colorValue, Silo.time)
+        Fade2Color(strip, silo->colorValue, silo->time)
         break;
     
     default:

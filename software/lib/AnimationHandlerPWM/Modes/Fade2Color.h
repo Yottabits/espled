@@ -1,9 +1,9 @@
-void FadeToColor(StripControle Strip, CRGBWW setColor, int fadeTime){
+void FadeToColor(StripControle* strip, CRGBWW setColor, int fadeTime){
     //initialize timer with zero
     static unsigned long timer = 0;
    
     //get old color
-    CRGBWW oldColor = Strip.getColor();
+    CRGBWW oldColor = strip->getColor();
 
     //leave function if finished or nothing to do
     if(oldColor == setColor){
@@ -44,12 +44,12 @@ void FadeToColor(StripControle Strip, CRGBWW setColor, int fadeTime){
     
         //calculate new Color value
         CRGBWW newColor();
-        newColor.R = Strip.getColor().R+stepR;
-        newColor.G = Strip.getColor().G+stepG;
-        newColor.B = Strip.getColor().B+stepB;
-        newColor.CW = Strip.getColor().CW+stepCW;
-        newColor.WW = Strip.getColor().WW+stepWW;
+        newColor.R = strip->getColor().R+stepR;
+        newColor.G = strip->getColor().G+stepG;
+        newColor.B = strip->getColor().B+stepB;
+        newColor.CW = strip->getColor().CW+stepCW;
+        newColor.WW = strip->getColor().WW+stepWW;
 
         //Write new Color to strip
-        Strip.showColor(newColor);
+        strip->showColor(newColor);
 }
