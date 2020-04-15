@@ -2,6 +2,7 @@
 
 StripControle::StripControle(stripType type){
   this->type = type;
+  this->off();
 }
 
 void StripControle::showColor(CRGBWW color){
@@ -20,6 +21,7 @@ void StripControle::recalculateColor(){
 
 void StripControle::setChannels(){
   analogWrite(pinR, channelValue.R);
+  //Serial.println(channelValue.R);
   analogWrite(pinG, channelValue.G);
   analogWrite(pinB, channelValue.B);
   analogWrite(pinCW, channelValue.CW);

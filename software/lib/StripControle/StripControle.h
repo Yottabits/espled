@@ -1,6 +1,5 @@
-
-#ifndef Definitions_h
-#define Definitions_h
+#ifndef STRIPCONTROLE_h
+#define STRIPCONTROLE_h
 
 #include <Arduino.h>
 #include <TypeDefinitions.h>
