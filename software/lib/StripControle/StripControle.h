@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 #include <TypeDefinitions.h>
+#include <PinDefinitions.h>
 
 
 class StripControle{
@@ -15,12 +16,16 @@ public:
 
 private:
   enum {RGB = 3, RGBW, RGBWW};
-  byte channelCount;
+  byte stripType;
   CRGBWW channelValue;
 
   CRGBWW RGBW2RGB();
   CRGBWW RGBWW2RGBW();
   CRGBWW RGBWW2RGB();
+
+  void recalculateColor();
+  void setChannels();
 };
+
 
 #endif
