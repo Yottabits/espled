@@ -26,6 +26,8 @@
 //ToDo Fix typo
 varSilo* Silo;
 
+bool* varSiloChanged = false;
+
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
 char strip_type[8] = "RGB";
@@ -107,6 +109,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("position:");
   Serial.println(Silo->position);
 
+
+  *varSiloChanged = true;
 }
 
 void initMQTT() {
@@ -307,7 +311,7 @@ void initStrip(){
     Serial.print("Annimation handler, strip and Silo initilized");
     Silo = new varSilo();
     simpleStrip = new StripControle(type);
-    pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo);
+    pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged);
   }
   else{
     //TODO

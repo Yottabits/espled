@@ -1,8 +1,9 @@
 #include "AnimationHandlerPWM.h"
 
-AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo){
+AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged){
     this->strip = strip;
     this->silo = silo;
+    this->varSiloChanged = varSiloChanged;
 }
 
 
@@ -13,12 +14,22 @@ void AnimationHandlerPWM::handle(){
     //Serial.println(silo->mode);
     //Serial.println(silo->colorValue.R);
     
+    static long lastChange = 0;
+    static CRGBWW oldColor{0,0,0,0,0};
+
+    if(varSiloChanged){
+        lastChange = millis();
+        oldColor = strip->getColor();
+        *varSiloChanged = false;
+    }
+
+
     switch (silo->mode){
         case FADE_2_COLOR:
-            fade2Color(strip, silo->colorValue, silo->time);
+            fade2Color(strip, silo->colorValue, silo->time, lastChange, oldColor);
             break;
         case BLINK_COLOR:
-            blinkColor(strip, silo->colorValue, silo->time);
+            blinkColor(strip, silo->colorValue, silo->time, oldColor);
             break;
         case STROBE:
             strobe(strip);
@@ -31,4 +42,6 @@ void AnimationHandlerPWM::handle(){
             break;
     }
     
+    //set varSiloChanged back to False
 }
+;

@@ -4,11 +4,12 @@
 
 class AnimationHandlerPWM{
   public:
-    AnimationHandlerPWM(StripControle* strip, varSilo* silo);
+    AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged);
     void handle();
     
   private:
     StripControle* strip;
     varSilo* silo;
+    bool* varSiloChanged;
 };
 
