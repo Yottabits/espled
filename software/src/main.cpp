@@ -16,7 +16,6 @@
 #include <AnimationHandlerPWM.h>
 #include <ArduinoJson.h>
 #include <FastLED.h>
-//#include <pwm.c>
 //--Includes--------------------------------------------------------------------
 
 
@@ -35,6 +34,7 @@ char mqtt_server[40];
 char mqtt_port[6] = "8080";
 char strip_type[8] = "RGB";
 char mainTopic[80] = "/ESPLED/";
+char debugTopic[80];
 
 stripType type;
 
@@ -57,6 +57,16 @@ AnimationHandlerBus* busHandler;
 void saveConfigCallback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
+}
+
+void firmmareReset(){
+  if(digitalRead(pinM) == LOW){
+    wifiManager.resetSettings();
+    SPIFFS.format();
+    digitalWrite(pinB, HIGH);
+    delay(500);
+    digitalWrite(pinB, LOW);
+  }
 }
 
 //WARNING: If received json incomplete, increase MQTT_MAX_PACKET_SIZE in PubSunClient Library
@@ -130,6 +140,9 @@ void initMQTT() {
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
       strcat(mainTopic, WiFi.macAddress().c_str());
+      strcat(debugTopic, mainTopic);
+      strcat(debugTopic, "/debug");
+
       Serial.print("Main Topic: ");
       Serial.println(mainTopic);
 
@@ -153,13 +166,8 @@ void initMQTT() {
   }
 }
 
-void initWifi(){
-  if(digitalRead(pinM) == LOW){
-    wifiManager.resetSettings();
-    digitalWrite(pinB, HIGH);
-    delay(500);
-    digitalWrite(pinB, LOW);
-  }
+void initWifi()
+{
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
@@ -358,15 +366,21 @@ void debugFkt(String message, LogLevel LevelOfMessage){
     }
     message += "";
 
-    //TODO define level enums
-    client.publish(strcat(mainTopic, "/debug"), message.c_str());
-    Serial.print(message);
+    static unsigned int lastMQTTPublished = 0;
+    if(millis() > lastMQTTPublished + 100){
+      lastMQTTPublished = millis();
+      client.publish(debugTopic, message.c_str());
+      Serial.println(message);
+    }
+
   }
-}
+
+
 
 void setup(){
   initPins();
 
+  firmmareReset();
   Serial.begin(115200);
   delay(50);
   Serial.println("Booting");
