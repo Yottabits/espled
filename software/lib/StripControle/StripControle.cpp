@@ -8,6 +8,7 @@ StripControle::StripControle(stripType type){
 void StripControle::showColor(CRGBWW color){
   channelValue = color;
   recalculateColor();
+  setChannels();
 }
 
 void StripControle::recalculateColor(){

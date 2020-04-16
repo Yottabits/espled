@@ -13,27 +13,31 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
     if(now > timer + UPDATE_TIME){
         //update Timer
         timer = millis();
-        
-/*         Serial.print("FadeTime: ");
+
+        /*Serial.print("FadeTime: ");
         Serial.println(fadeTime);
         Serial.print("lastChange");
-        Serial.println(lastChange); */
+        Serial.println(lastChange);
 
+        Serial.print("setColor R: ");
+        Serial.println(setColor.R);
+        Serial.print("D: ");
+        Serial.println(setColor.R); */
         bool fadeEndReached = now > (lastChange+fadeTime);
         CRGBWW newColor;
         if(!fadeEndReached){
-            
-            
+
+
             float difR, difG, difB, difCW, difWW;
-            difR = setColor.R - oldColor.R;
-            difG = setColor.G - oldColor.G;
-            difB = setColor.B - oldColor.B;
-            difCW = setColor.CW - oldColor.CW ;
-            difWW = setColor.WW - oldColor.WW;     
+            difR = (int)(setColor.R - oldColor.R);
+            difG = (int)(setColor.G - oldColor.G);
+            difB = (int)(setColor.B - oldColor.B);
+            difCW = (int)(setColor.CW - oldColor.CW) ;
+            difWW = (int)(setColor.WW - oldColor.WW);
 
 
             //Calculate new Color Values
-            
+
             newColor.R = oldColor.R+(now-lastChange)*(difR/fadeTime);
             newColor.G = oldColor.G+(now-lastChange)*(difG/fadeTime);
             newColor.B = oldColor.B+(now-lastChange)*(difB/fadeTime);
@@ -58,7 +62,7 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
         }
 
         strip->showColor(newColor);
-        
+
 
     }
 
