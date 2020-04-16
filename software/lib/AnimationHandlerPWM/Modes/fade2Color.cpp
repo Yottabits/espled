@@ -35,15 +35,9 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
             newColor.CW = oldColor.CW+(now-lastChange)*(difCW/fadeTime);
             newColor.WW = oldColor.WW+(now-lastChange)*(difWW/fadeTime);
 
-            debugFkt("NewColor",VERBOSE);
-
-            //debugFkt(String(newColor.R));
-            //debugFkt("(now-lastChange)");
-            //debugFkt(String(now-lastChange));
-
-            //debugFkt("(difR/fadeTime)");
-            //debugFkt((difR/fadeTime));
-
+            debugFkt("Fade2Color -> (now-lastChange):"+String(now-lastChange),VERBOSE);
+            debugFkt("Fade2Color -> (difR/fadeTime):"+String(difR/fadeTime),VERBOSE);
+            
         }else{
             newColor.R = setColor.R;
             newColor.G = setColor.G;
@@ -52,6 +46,10 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
             newColor.WW = setColor.WW;
             //Write setColor to Strip
         }
+
+        //Debugg new ColorValue that gets send to StripControle
+        debugFkt("NewColorValue Fade2Color (R-G-B-CW-WW):"+(String)newColor.R+(String)newColor.G+(String)newColor.B+(String)newColor.CW+(String)newColor.WW,DEBUG);
+
 
         strip->showColor(newColor);
 
