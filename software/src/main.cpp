@@ -33,6 +33,7 @@ bool* varSiloChanged = new bool(false);
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
 char strip_type[8] = "RGB";
+char mainTopic[80] = "/ESPLED/";
 
 stripType type;
 
@@ -126,7 +127,6 @@ void initMQTT() {
     String clientId = "RGB-Controller";
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
-      char mainTopic[80] = "/ESPLED/";
       strcat(mainTopic, WiFi.macAddress().c_str());
       Serial.print("Main Topic: ");
       Serial.println(mainTopic);
@@ -333,9 +333,8 @@ void runAnnimationHandler(){
 
 void debugFkt(String message){
   //TODO define level enums
+  client.publish(strcat(mainTopic, "/debug"), message.c_str());
   Serial.print(message);
-  //TODO
-  //Pub(message) on mqtt
 }
 
 void setup(){
