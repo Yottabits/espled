@@ -5,7 +5,7 @@ extern void debugFkt(String, LogLevel);
 
 
 void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, long lastChange, CRGBWW oldColor){
-    debugFkt("Called fadevColor Mode Function",VERBOSE);
+    debugFkt("Called fade2Color Mode Function",VERBOSE);
 
     //initialize timer with zero
     static unsigned long timer = 0;
