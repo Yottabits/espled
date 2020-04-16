@@ -1,5 +1,8 @@
 #include "AnimationHandlerPWM.h"
 
+
+extern void debugFkt(String, LogLevel);
+
 AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged){
     this->strip = strip;
     this->silo = silo;
@@ -30,7 +33,7 @@ void AnimationHandlerPWM::handle(){
             fade2Color(strip, silo->colorValue, silo->time, lastChange, oldColor);
             break;
         case BLINK_COLOR:
-            blinkColor(strip, silo->colorValue, silo->time, oldColor);
+            blinkColor(strip, silo->colorValue, silo->time, lastChange, oldColor);
             break;
         case STROBE:
             strobe(strip);
@@ -39,7 +42,7 @@ void AnimationHandlerPWM::handle(){
             sound2Light(strip);
             break;
         default:
-            Serial.print("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips");
+            debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
             break;
     }
     

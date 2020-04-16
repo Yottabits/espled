@@ -374,6 +374,7 @@ void debugFkt(String message, LogLevel LevelOfMessage){
     }
 
   }
+}
 
 
 

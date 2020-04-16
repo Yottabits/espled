@@ -1,10 +1,12 @@
 #include "modes.h"
 //set update frequency/time
 const uint UPDATE_TIME = 16;
-extern void debugFkt(String);
+extern void debugFkt(String, LogLevel);
 
 
 void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, long lastChange, CRGBWW oldColor){
+    debugFkt("Called fadevColor Mode Function",VERBOSE);
+
     //initialize timer with zero
     static unsigned long timer = 0;
 
@@ -15,20 +17,10 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
         //update Timer
         timer = millis();
 
-        /*Serial.print("FadeTime: ");
-        Serial.println(fadeTime);
-        Serial.print("lastChange");
-        Serial.println(lastChange);
-
-        Serial.print("setColor R: ");
-        Serial.println(setColor.R);
-        Serial.print("D: ");
-        Serial.println(setColor.R); */
         bool fadeEndReached = now > (lastChange+fadeTime);
         CRGBWW newColor;
+
         if(!fadeEndReached){
-
-
             float difR, difG, difB, difCW, difWW;
             difR = (int)(setColor.R - oldColor.R);
             difG = (int)(setColor.G - oldColor.G);
@@ -36,14 +28,14 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
             difCW = (int)(setColor.CW - oldColor.CW) ;
             difWW = (int)(setColor.WW - oldColor.WW);
 
-
             //Calculate new Color Values
-
             newColor.R = oldColor.R+(now-lastChange)*(difR/fadeTime);
             newColor.G = oldColor.G+(now-lastChange)*(difG/fadeTime);
             newColor.B = oldColor.B+(now-lastChange)*(difB/fadeTime);
             newColor.CW = oldColor.CW+(now-lastChange)*(difCW/fadeTime);
             newColor.WW = oldColor.WW+(now-lastChange)*(difWW/fadeTime);
+
+            debugFkt("NewColor",VERBOSE);
 
             //debugFkt(String(newColor.R));
             //debugFkt("(now-lastChange)");
