@@ -53,9 +53,45 @@ AnimationHandlerPWM* pwmHandler;
 AnimationHandlerBus* busHandler;
 //TODO: Adressable Strip
 
+
+void debugFkt(String message, LogLevel LevelOfMessage){
+  if(LOGLEVEL <= LevelOfMessage){
+    //Add Level to message
+    switch (LevelOfMessage)
+    {
+    case VERBOSE:
+      message = "[VERBOSE]:"+message;
+      break;
+    case DEBUG:
+      message = "[DEBUG]:"+message;
+      break;
+    case INFO:
+      message = "[INFO]:"+message;
+      break;
+    case WARNING:
+      message = "[WARNING]:"+message;
+      break;
+    case ERROR:
+      message = "[ERROR]:"+message;
+      break;
+    default:
+      break;
+    }
+    message += "";
+
+    static unsigned int lastMQTTPublished = 0;
+    //if(millis() > lastMQTTPublished + 100F){
+      lastMQTTPublished = millis();
+      client.publish(debugTopic, message.c_str());
+      Serial.println(message);
+    //}
+
+  }
+}
+
 //callback notifying us of the need to save config
 void saveConfigCallback () {
-  Serial.println("Should save config");
+  debugFkt("Should save config", INFO);
   shouldSaveConfig = true;
 }
 
@@ -79,8 +115,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print((char)payload[i]);
   }
 
-  Serial.println();
-
   //use Stack
   StaticJsonDocument<1024> doc;
   //use Heap
@@ -100,29 +134,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Silo->length = doc["length"];
   Silo->position = doc["position"];
 
-  Serial.println("Parsed Values");
-  Serial.print("Mode:");
-  Serial.println(Silo->mode);
-  Serial.print("R:");
-  Serial.println(Silo->colorValue.R);
-  Serial.println(" G:");
-  Serial.println(Silo->colorValue.G);
-  Serial.println(" B:");
-  Serial.println(Silo->colorValue.B);
-  Serial.println(" CW:");
-  Serial.println(Silo->colorValue.CW);
-  Serial.println(" WW:");
-  Serial.println(Silo->colorValue.WW);
-  Serial.print("Time:");
-  Serial.println(Silo->time);
-  Serial.print("Freq:");
-  Serial.println(Silo->frequency);
-  Serial.print("sensitivity:");
-  Serial.println(Silo->sensitivity);
-  Serial.print("length:");
-  Serial.println(Silo->length);
-  Serial.print("position:");
-  Serial.println(Silo->position);
+  debugFkt("Parsed Values", DEBUG);
+  debugFkt("Mode:", DEBUG);
+  debugFkt(String(Silo->mode), DEBUG);
+  debugFkt("R:", DEBUG);
+  debugFkt(String(Silo->colorValue.R), DEBUG);
+  debugFkt("G:", DEBUG);
+  debugFkt(String(Silo->colorValue.G), DEBUG);
+  debugFkt(" B:", DEBUG);
+  debugFkt(String(Silo->colorValue.B), DEBUG);
+  debugFkt(" CW:", DEBUG);
+  debugFkt(String(Silo->colorValue.CW), DEBUG);
+  debugFkt(" WW:", DEBUG);
+  debugFkt(String(Silo->colorValue.WW), DEBUG);
+  debugFkt("Time:", DEBUG);
+  debugFkt(String(Silo->time), DEBUG);
+  debugFkt("Freq:", DEBUG);
+  debugFkt(String(Silo->frequency), DEBUG);
+  debugFkt("sensitivity:", DEBUG);
+  debugFkt(String(Silo->sensitivity), DEBUG);
+  debugFkt("length:", DEBUG);
+  debugFkt(String(Silo->length), DEBUG);
+  debugFkt("position:", DEBUG);
+  debugFkt(String(Silo->position), DEBUG);
 
 
   *varSiloChanged = true;
@@ -132,9 +166,9 @@ void initMQTT() {
   // Loop until we're reconnected
   while (!client.connected())
   {
-    Serial.println("Attempting MQTT connection with:");
-    Serial.println(mqtt_server);
-    Serial.println(atoi(mqtt_port));
+    debugFkt("Attempting MQTT connection with:", INFO);
+    debugFkt(mqtt_server, INFO);
+    debugFkt(String(atoi(mqtt_port)), INFO);
     // Create a random client ID
     String clientId = "RGB-Controller";
     // Attempt to connect
@@ -143,10 +177,10 @@ void initMQTT() {
       strcat(debugTopic, mainTopic);
       strcat(debugTopic, "/debug");
 
-      Serial.print("Main Topic: ");
-      Serial.println(mainTopic);
+      debugFkt("Main Topic: ", INFO);
+      debugFkt(mainTopic, INFO);
 
-      Serial.println("connected");
+      debugFkt("-------------", INFO);
 
       char readyTopic[80];
       strcat(readyTopic, mainTopic);
@@ -157,9 +191,9 @@ void initMQTT() {
     }
     else
     {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
+      debugFkt("failed, rc=", ERROR);
+      debugFkt(String(client.state()), ERROR);
+      debugFkt("Try again in 5 seconds", ERROR);
       // Wait 5 seconds before retrying
       delay(5000);
     }
@@ -182,8 +216,8 @@ void initWifi()
   wifiManager.setConfigPortalTimeout(180);
 
   //After the WiFi Manger is done, we are most probably connected
-  Serial.println("local ip");
-  Serial.println(WiFi.localIP());
+  debugFkt("local ip", INFO);
+  debugFkt(String(WiFi.localIP()), INFO);
 
 
   strcpy(mqtt_server, custom_mqtt_server.getValue());
@@ -192,7 +226,7 @@ void initWifi()
 
   //save the custom parameters to FS
   if (shouldSaveConfig) {
-    Serial.println("saving config");
+    debugFkt("saving config", INFO);
 
     DynamicJsonDocument doc(4000);
     JsonObject json = doc.to<JsonObject>();
@@ -203,7 +237,7 @@ void initWifi()
 
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {
-      Serial.println("failed to open config file for writing");
+      debugFkt("failed to open config file for writing", ERROR);
     }
 
     serializeJson(json, Serial);
@@ -226,10 +260,10 @@ void initOta(){
     } else { // U_SPIFFS
       type = "filesystem";
     }
-    Serial.println("Start updating " + type);
+    debugFkt("Start updating " + type, INFO);
   });
   ArduinoOTA.onEnd([]() {
-    Serial.println("\nEnd");
+    debugFkt("End", INFO);
   });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
@@ -237,31 +271,31 @@ void initOta(){
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("Error[%u]: ", error);
     if (error == OTA_AUTH_ERROR) {
-      Serial.println("Auth Failed");
+      debugFkt("Auth Failed", ERROR);
     } else if (error == OTA_BEGIN_ERROR) {
-      Serial.println("Begin Failed");
+      debugFkt("Begin Failed", ERROR);
     } else if (error == OTA_CONNECT_ERROR) {
-      Serial.println("Connect Failed");
+      debugFkt("Connect Failed", ERROR);
     } else if (error == OTA_RECEIVE_ERROR) {
-      Serial.println("Receive Failed");
+      debugFkt("Receive Failed", ERROR);
     } else if (error == OTA_END_ERROR) {
-      Serial.println("End Failed");
+      debugFkt("End Failed", ERROR);
     }
   });
   ArduinoOTA.begin();
 }
 
 void initFS(){
-  Serial.println("mounting FS...");
+  debugFkt("mounting FS...", INFO);
 
   if (SPIFFS.begin()) {
-    Serial.println("mounted file system");
+    debugFkt("mounted file system", INFO);
     if (SPIFFS.exists("/config.json")) {
       //file exists, reading and loading
-      Serial.println("reading config file");
+      debugFkt("reading config file", INFO);
       File configFile = SPIFFS.open("/config.json", "r");
       if (configFile) {
-        Serial.println("opened config file");
+        debugFkt("opened config file", INFO);
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
         std::unique_ptr<char[]> buf(new char[size]);
@@ -278,22 +312,22 @@ void initFS(){
 
         serializeJson(json, Serial);
         if (!json.isNull()) {
-          Serial.println("\nparsed json");
+          debugFkt("\nparsed json", INFO);
 
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
           strcpy(strip_type, json["strip_type"]);
 
         } else {
-          Serial.println("failed to load json config");
+          debugFkt("failed to load json config", ERROR);
         }
         configFile.close();
       }
     }
   } else {
-    Serial.println("failed to mount FS");
+    debugFkt("failed to mount FS", ERROR);
   }
-  Serial.println("Finished spiffs shit");
+  debugFkt("Finished spiffs", INFO);
 }
 
 void initPins(){
@@ -341,42 +375,6 @@ void runAnnimationHandler(){
   }
 }
 
-void debugFkt(String message, LogLevel LevelOfMessage){
-  if(LOGLEVEL <= LevelOfMessage){
-    //Add Level to message
-    switch (LevelOfMessage)
-    {
-    case VERBOSE:
-      message = "[VERBOSE]:"+message;
-      break;
-    case DEBUG:
-      message = "[DEBUG]:"+message;
-      break;
-    case INFO:
-      message = "[INFO]:"+message;
-      break;
-    case WARNING:
-      message = "[WARNING]:"+message;
-      break;
-    case ERROR:
-      message = "[ERROR]:"+message;
-      break;
-    default:
-      break;
-    }
-    message += "";
-
-    static unsigned int lastMQTTPublished = 0;
-    if(millis() > lastMQTTPublished + 100){
-      lastMQTTPublished = millis();
-      client.publish(debugTopic, message.c_str());
-      Serial.println(message);
-    }
-
-  }
-}
-
-
 
 void setup(){
   initPins();
@@ -384,7 +382,7 @@ void setup(){
   firmmareReset();
   Serial.begin(115200);
   delay(50);
-  Serial.println("Booting");
+  debugFkt("Booting", INFO);
 
   delay(500);
 
@@ -394,9 +392,9 @@ void setup(){
   initOta();
   initStrip();
 
-  Serial.println("Ready");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  debugFkt("Ready", INFO);
+  debugFkt("IP address: ", INFO);
+  debugFkt(String(WiFi.localIP()), INFO);
   simpleStrip->showColor(CRGBWW{0,1023,0,0,0});
   delay(500);
   simpleStrip->showColor(CRGBWW{0,0,0,0,0});
