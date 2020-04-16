@@ -79,6 +79,7 @@ See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 |104|StrobeParts|Small x-LED long "Parts" light up in strobe mode|RGBWW, Freq, centerposition, PartLength|
 |105|Moving Parts|Small x-LED long "Parts" travel from centerpos(=Startpos) - to the end(s) of the strip|RGBWW-value, update rate, centerposition, |
 |106|American Police Light|red/blue left/right (half of adress room) flash|update rate|
+|107|Rainbow|fills strip with rainbow maybe moves it||
 
 
 
