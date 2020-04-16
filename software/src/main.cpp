@@ -80,11 +80,11 @@ void debugFkt(String message, LogLevel LevelOfMessage){
     message += "";
 
     static unsigned int lastMQTTPublished = 0;
-    if(millis() > lastMQTTPublished + 100){
+    //if(millis() > lastMQTTPublished + 100F){
       lastMQTTPublished = millis();
       client.publish(debugTopic, message.c_str());
       Serial.println(message);
-    }
+    //}
 
   }
 }
