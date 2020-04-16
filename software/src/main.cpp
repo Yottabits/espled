@@ -42,6 +42,7 @@ bool shouldSaveConfig = false;
 
 const char* mqtt_device_id = "/rgbController/";
 
+const LogLevel LOGLEVEL = VERBOSE;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
@@ -332,10 +333,35 @@ void runAnnimationHandler(){
   }
 }
 
-void debugFkt(String message, LogLevel Level){
-  //TODO define level enums
-  client.publish(strcat(mainTopic, "/debug"), message.c_str());
-  Serial.print(message);
+void debugFkt(String message, LogLevel LevelOfMessage){
+  if(LOGLEVEL <= LevelOfMessage){
+    //Add Level to message
+    switch (LevelOfMessage)
+    {
+    case VERBOSE:
+      message = "[VERBOSE]:"+message;
+      break;
+    case DEBUG:
+      message = "[DEBUG]:"+message;
+      break;
+    case INFO:
+      message = "[INFO]:"+message;
+      break;
+    case WARNING:
+      message = "[WARNING]:"+message;
+      break;
+    case ERROR:
+      message = "[ERROR]:"+message;
+      break;
+    default:
+      break;
+    }
+    message += "";
+
+    //TODO define level enums
+    client.publish(strcat(mainTopic, "/debug"), message.c_str());
+    Serial.print(message);
+  }
 }
 
 void setup(){
