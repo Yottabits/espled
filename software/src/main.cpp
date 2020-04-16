@@ -42,7 +42,7 @@ bool shouldSaveConfig = false;
 
 const char* mqtt_device_id = "/rgbController/";
 
-const LogLevel LOGLEVEL = VERBOSE;
+const LogLevel LOGLEVEL = DEBUG;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
@@ -107,10 +107,7 @@ void firmmareReset(){
 
 //WARNING: If received json incomplete, increase MQTT_MAX_PACKET_SIZE in PubSunClient Library
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] with length ");
-  Serial.print(length);
+  debugFkt("Message arrived", INFO);
   for (unsigned int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
@@ -135,29 +132,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Silo->position = doc["position"];
 
   debugFkt("Parsed Values", DEBUG);
-  debugFkt("Mode:", DEBUG);
-  debugFkt(String(Silo->mode), DEBUG);
-  debugFkt("R:", DEBUG);
-  debugFkt(String(Silo->colorValue.R), DEBUG);
-  debugFkt("G:", DEBUG);
-  debugFkt(String(Silo->colorValue.G), DEBUG);
-  debugFkt(" B:", DEBUG);
-  debugFkt(String(Silo->colorValue.B), DEBUG);
-  debugFkt(" CW:", DEBUG);
-  debugFkt(String(Silo->colorValue.CW), DEBUG);
-  debugFkt(" WW:", DEBUG);
-  debugFkt(String(Silo->colorValue.WW), DEBUG);
-  debugFkt("Time:", DEBUG);
-  debugFkt(String(Silo->time), DEBUG);
-  debugFkt("Freq:", DEBUG);
-  debugFkt(String(Silo->frequency), DEBUG);
-  debugFkt("sensitivity:", DEBUG);
-  debugFkt(String(Silo->sensitivity), DEBUG);
-  debugFkt("length:", DEBUG);
-  debugFkt(String(Silo->length), DEBUG);
-  debugFkt("position:", DEBUG);
-  debugFkt(String(Silo->position), DEBUG);
-
+  debugFkt("Mode: " + String(Silo->mode), DEBUG);
+  debugFkt("(R-G-B-CW-WW): "+(String)Silo->colorValue.R+(String)Silo->colorValue.G+(String)Silo->colorValue.B+(String)Silo->colorValue.CW+(String)Silo->colorValue.WW,DEBUG);
+  debugFkt("Time: " + String(Silo->time), DEBUG);
+  debugFkt("Freq: " + String(Silo->frequency), DEBUG);
+  debugFkt("sensitivity: " + String(Silo->sensitivity), DEBUG);
+  debugFkt("length: " + String(Silo->length), DEBUG);
+  debugFkt("position: " + String(Silo->position), DEBUG);
 
   *varSiloChanged = true;
 }
@@ -354,7 +335,7 @@ void initStrip(){
   else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102_STRIP;
 
   if(type < 6){
-    Serial.print("Annimation handler, strip and Silo initilized");
+    debugFkt("Annimation handler, strip and Silo initialized", INFO);
     Silo = new varSilo();
     simpleStrip = new StripControle(type);
     pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged);
@@ -377,7 +358,7 @@ void runAnnimationHandler(){
 
 
 void setup(){
-  initPins();
+  //initPins();
 
   firmmareReset();
   Serial.begin(115200);
