@@ -5,7 +5,7 @@ extern void debugFkt(String, LogLevel);
 
 
 void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, long lastChange, CRGBWW oldColor){
-    debugFkt("Called fadevColor Mode Function",VERBOSE);
+    debugFkt("Called fade2Color Mode Function",VERBOSE);
 
     //initialize timer with zero
     static unsigned long timer = 0;
@@ -37,6 +37,9 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
 
             debugFkt("Fade2Color -> (now-lastChange):"+String(now-lastChange),VERBOSE);
             debugFkt("Fade2Color -> (difR/fadeTime):"+String(difR/fadeTime),VERBOSE);
+
+            //Debugg new ColorValue that gets send to StripControle
+            debugFkt("NewColorValue Fade2Color (R-G-B-CW-WW):"+(String)newColor.R+","+(String)newColor.G+","+(String)newColor.B+","+(String)newColor.CW+","+(String)newColor.WW,DEBUG);
             
         }else{
             newColor.R = setColor.R;
@@ -47,8 +50,6 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
             //Write setColor to Strip
         }
 
-        //Debugg new ColorValue that gets send to StripControle
-        debugFkt("NewColorValue Fade2Color (R-G-B-CW-WW):"+(String)newColor.R+(String)newColor.G+(String)newColor.B+(String)newColor.CW+(String)newColor.WW,DEBUG);
 
 
         strip->showColor(newColor);
