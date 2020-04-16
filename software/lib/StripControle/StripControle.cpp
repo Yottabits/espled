@@ -12,10 +12,10 @@ void StripControle::showColor(CRGBWW color){
 }
 
 void StripControle::recalculateColor(){
-  if(type == RGB){
+  if(type == RGB_STRIP){
     channelValue = RGBWW2RGB();
   }
-  else if(type == RGBW){
+  else if(type == RGBW_STRIP){
     channelValue = RGBWW2RGBW();
   }
 }

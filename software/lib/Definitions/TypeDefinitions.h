@@ -31,10 +31,13 @@ typedef struct{
 } varSilo;
 
 //Supported LED Strip Types
-enum stripType {RGB = 3, RGBW, RGBWW, WS2812, APA102};
+enum stripType {RGB_STRIP = 3, RGBW_STRIP, RGBWW_STRIP, WS2812_STRIP, APA102_STRIP};
 
 
 //LED Strip Modes
 enum Mode {FADE_2_COLOR, BLINK_COLOR, STROBE, SOUND_2_LIGHT, FIRE, NOISE, VU_METER, STROBE_PARTS, MOVING_PARTS};
+
+//Log LEVELS
+enum LogLevel {VERBOSE, DEBUG, INFO, WARNING, ERROR};
 
 #endif

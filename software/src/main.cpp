@@ -15,6 +15,7 @@
 #include <AnimationHandlerBus.h>
 #include <AnimationHandlerPWM.h>
 #include <ArduinoJson.h>
+#include <FastLED.h>
 //#include <pwm.c>
 //--Includes--------------------------------------------------------------------
 
@@ -303,11 +304,11 @@ void initPins(){
 }
 
 void initStrip(){
-  if(strcmp(strip_type, "RGB") == 0) type = stripType::RGB;
-  else if(strcmp(strip_type, "RGBW") == 0) type = stripType::RGBW;
-  else if(strcmp(strip_type, "RGBWW") == 0) type = stripType::RGBWW;
-  else if(strcmp(strip_type, "WS2812") == 0) type = stripType::WS2812;
-  else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102;
+  if(strcmp(strip_type, "RGB") == 0) type = stripType::RGB_STRIP;
+  else if(strcmp(strip_type, "RGBW") == 0) type = stripType::RGBW_STRIP;
+  else if(strcmp(strip_type, "RGBWW") == 0) type = stripType::RGBWW_STRIP;
+  else if(strcmp(strip_type, "WS2812") == 0) type = stripType::WS2812_STRIP;
+  else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102_STRIP;
 
   if(type < 6){
     Serial.print("Annimation handler, strip and Silo initilized");
@@ -331,7 +332,7 @@ void runAnnimationHandler(){
   }
 }
 
-void debugFkt(String message){
+void debugFkt(String message, LogLevel Level){
   //TODO define level enums
   client.publish(strcat(mainTopic, "/debug"), message.c_str());
   Serial.print(message);
