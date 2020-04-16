@@ -1,6 +1,7 @@
 #include "modes.h"
 //set update frequency/time
 const uint UPDATE_TIME = 16;
+extern void debugFkt(String);
 
 
 void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, long lastChange, CRGBWW oldColor){
@@ -44,13 +45,12 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
             newColor.CW = oldColor.CW+(now-lastChange)*(difCW/fadeTime);
             newColor.WW = oldColor.WW+(now-lastChange)*(difWW/fadeTime);
 
-            Serial.print("newColor.R:");
-            Serial.println(newColor.R);
-            Serial.print("(now-lastChange)");
-            Serial.println((now-lastChange));
+            //debugFkt(String(newColor.R));
+            //debugFkt("(now-lastChange)");
+            //debugFkt(String(now-lastChange));
 
-            Serial.print("(difR/fadeTime)");
-            Serial.println((difR/fadeTime));
+            //debugFkt("(difR/fadeTime)");
+            //debugFkt((difR/fadeTime));
 
         }else{
             newColor.R = setColor.R;
