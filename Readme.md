@@ -69,8 +69,8 @@ See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 |2|  Blink color     |  Stores current State, Fades to color and back - Maybe posibility of selectiong number of blinks | RGBWW-value, Transition time, OnTime, NumOfBlinks |
 |3|Strobe|Strobe selectable color and Freq|RGBWW-value, Freq |
 |4|Sound2LIGHT|adjust brightness according to soundvalue|RGBWW-value, sensivitity |
-|5||||
-|6||||
+|5|Breathing|Strip turns brighter and darker periodically (some randomness) |RGBWW-value, frequency how often it should "breath"|
+|6|TempVis|Visualizes Temperatur Value of Temp Sensor - Cold(Blue)<>Normal(Green)<>Hot(Red)||
 |7||||
 |8||||
 |101|Lagerfeuer Animation|(gibt es online fertig)|centerposition|
