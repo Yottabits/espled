@@ -13,11 +13,11 @@ AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bo
 void AnimationHandlerPWM::handle(){
     //Switch Case that calls the apropriate Function for Handeling the currently selected Mode
     //All Modes are Implemented as one Function in the folder Modes
-    
+
     //Serial.print("Silo->time");
     //Serial.println(silo->time);
-    
-    
+
+
     static long lastChange = 0;
     static CRGBWW oldColor{0,0,0,0,0};
 
@@ -41,11 +41,14 @@ void AnimationHandlerPWM::handle(){
         case SOUND_2_LIGHT:
             sound2Light(strip);
             break;
+        case BREATHE:
+            breathe(strip);
+            break;
         default:
             debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
             break;
     }
-    
+
     //set varSiloChanged back to False
 }
 ;
