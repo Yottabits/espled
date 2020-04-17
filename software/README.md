@@ -24,7 +24,9 @@ There are three different interfaces to connect to the controller.
 
 ### MQTT
 The different functions of the controller are available under the following MQTT topic:
-*/ESPLED/FF:FF:FF:FF:FF:FF* (replace with MAC of your device, visible in the setup routine)
+
+*/ESPLED/FF:FF:FF:FF:FF:FF* 
+(replace with MAC of your device, visible in the setup routine)
 
 The payload contais json in the following format:
 
