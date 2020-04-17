@@ -33,10 +33,14 @@ CRGBWW AnimationHandler::breathe(){
     int rawCos = -cos16((now-fadeTimer)*angularVelocity);
     int currentBrightnes = map(rawCos,-32767,32767,silo->minBrightnes,noisedMaxBightnes);
 
-    CRGBWW newColor = silo->colorValue;
-    rgb2hsv(newColor, currentHSV);
-    currentHSV[2] = currentBrightnes;
-    hsv2rgb(currentHSV, newColor);
+    float scaleFactor = currentBrightnes / 1023.0;
+
+    CRGBWW newColor;
+    newColor.R = silo->colorValue.R * scaleFactor;
+    newColor.G = silo->colorValue.G * scaleFactor;
+    newColor.B = silo->colorValue.B * scaleFactor;
+    newColor.WW = silo->colorValue.WW * scaleFactor;
+    newColor.CW = silo->colorValue.CW * scaleFactor;
 
 
     debugFkt(
