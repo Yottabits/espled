@@ -39,7 +39,7 @@ void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, lo
             debugFkt("Fade2Color -> (difR/fadeTime):"+String(difR/fadeTime),VERBOSE);
 
             //Debugg new ColorValue that gets send to StripControle
-            debugFkt("NewColorValue Fade2Color (R-G-B-CW-WW):"+(String)newColor.R+","+(String)newColor.G+","+(String)newColor.B+","+(String)newColor.CW+","+(String)newColor.WW,DEBUG);
+            debugFkt("NewColorValue Fade2Color (R-G-B-WW-CW):"+(String)newColor.R+","+(String)newColor.G+","+(String)newColor.B+","+(String)newColor.WW+","+(String)newColor.CW,DEBUG);
 
         }else{
             newColor.R = setColor.R;

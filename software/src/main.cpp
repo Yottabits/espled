@@ -122,7 +122,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Silo->colorValue.G = doc["color"][1];
   Silo->colorValue.B = doc["color"][2];
   Silo->colorValue.WW = doc["color"][3];
-  Silo->colorValue.CW = doc["color"][4];
+  Silo->colorValue.CW = doc["color"][4  ];
   Silo->time = doc["time"];
   Silo->frequency = doc["frequency"];
   Silo->sensitivity = doc["sensitivity"];
