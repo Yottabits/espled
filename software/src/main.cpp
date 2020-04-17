@@ -117,21 +117,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //DynamicJsonDocument doc(2048);
 
   deserializeJson(doc, payload, length);
-  Silo->mode = doc["mode"];
-  Silo->colorValue.R = doc["color"][0];
-  Silo->colorValue.G = doc["color"][1];
-  Silo->colorValue.B = doc["color"][2];
-  Silo->colorValue.WW = doc["color"][3];
-  Silo->colorValue.CW = doc["color"][4];
-  Silo->time = doc["time"];
-  Silo->frequency = doc["frequency"];
-  Silo->sensitivity = doc["sensitivity"];
-  Silo->length = doc["length"];
-  Silo->position = doc["position"];
-  Silo->minBrightnes = doc["minBrightnes"];
-  Silo->maxBrightnes = doc["maxBrightnes"];
-  Silo->timeVariance = doc["timeVariance"];
-  Silo->maxBrightnesVariance = doc["maxBrightnesVariance"];
+  if(doc.containsKey("mode")) Silo->mode = doc["mode"];
+  if(doc.containsKey("color")){
+    Silo->colorValue.R = doc["color"][0];
+    Silo->colorValue.G = doc["color"][1];
+    Silo->colorValue.B = doc["color"][2];
+    Silo->colorValue.WW = doc["color"][3];
+    Silo->colorValue.CW = doc["color"][4];
+  }
+  if(doc.containsKey("time")) Silo->time = doc["time"];
+  if(doc.containsKey("frequency")) Silo->frequency = doc["frequency"];
+  if(doc.containsKey("sensitivity")) Silo->sensitivity = doc["sensitivity"];
+  if(doc.containsKey("length")) Silo->length = doc["length"];
+  if(doc.containsKey("position")) Silo->position = doc["position"];
+  if(doc.containsKey("minBrightnes")) Silo->minBrightnes = doc["minBrightnes"];
+  if(doc.containsKey("maxBrightnes")) Silo->maxBrightnes = doc["maxBrightnes"];
+  if(doc.containsKey("timeVariance")) Silo->timeVariance = doc["timeVariance"];
+  if(doc.containsKey("maxBrightnesVariance")) Silo->maxBrightnesVariance = doc["maxBrightnesVariance"];
 
 
   debugFkt("Message arrived, Length: " + String(length), INFO);
