@@ -17,6 +17,8 @@ class AnimationHandler{
     CRGBWW strobe();
     CRGBWW breathe();
 
+    void rgb2hsv(CRGBWW &rgbContainer, unsigned int hsvContainer[]);
+    void hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer);
 
   protected:
     varSilo* silo;
