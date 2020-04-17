@@ -107,7 +107,6 @@ void firmmareReset(){
 
 //WARNING: If received json incomplete, increase MQTT_MAX_PACKET_SIZE in PubSunClient Library
 void callback(char* topic, byte* payload, unsigned int length) {
-  debugFkt("Message arrived", INFO);
   for (unsigned int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
@@ -118,22 +117,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //DynamicJsonDocument doc(2048);
 
   deserializeJson(doc, payload, length);
-
   Silo->mode = doc["mode"];
   Silo->colorValue.R = doc["color"][0];
   Silo->colorValue.G = doc["color"][1];
   Silo->colorValue.B = doc["color"][2];
-  Silo->colorValue.CW = doc["color"][3];
-  Silo->colorValue.WW = doc["color"][4];
+  Silo->colorValue.WW = doc["color"][3];
+  Silo->colorValue.CW = doc["color"][4];
   Silo->time = doc["time"];
   Silo->frequency = doc["frequency"];
   Silo->sensitivity = doc["sensitivity"];
   Silo->length = doc["length"];
   Silo->position = doc["position"];
 
+
+  debugFkt("Message arrived", INFO);
   debugFkt("Parsed Values", DEBUG);
   debugFkt("Mode: " + String(Silo->mode), DEBUG);
-  debugFkt("(R-G-B-CW-WW): "+(String)Silo->colorValue.R+(String)Silo->colorValue.G+(String)Silo->colorValue.B+(String)Silo->colorValue.CW+(String)Silo->colorValue.WW,DEBUG);
+  debugFkt("(R-G-B-CW-WW): "+(String)Silo->colorValue.R+ "-" + (String)Silo->colorValue.G+ "-" + (String)Silo->colorValue.B+ "-" + (String)Silo->colorValue.CW+ "-" + (String)Silo->colorValue.WW,DEBUG);
   debugFkt("Time: " + String(Silo->time), DEBUG);
   debugFkt("Freq: " + String(Silo->frequency), DEBUG);
   debugFkt("sensitivity: " + String(Silo->sensitivity), DEBUG);
@@ -358,7 +358,7 @@ void runAnnimationHandler(){
 
 
 void setup(){
-  //initPins();
+  initPins();
 
   firmmareReset();
   Serial.begin(115200);
@@ -376,7 +376,7 @@ void setup(){
   debugFkt("Ready", INFO);
   debugFkt("IP address: ", INFO);
   debugFkt(String(WiFi.localIP()), INFO);
-  simpleStrip->showColor(CRGBWW{0,1023,0,0,0});
+  simpleStrip->showColor(CRGBWW{0,1023,0,1023,0});
   delay(500);
   simpleStrip->showColor(CRGBWW{0,0,0,0,0});
 }

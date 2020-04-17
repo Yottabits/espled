@@ -26,8 +26,8 @@ void StripControle::setChannels(){
   //Serial.println(channelValue.R);
   analogWrite(pinG, channelValue.G);
   analogWrite(pinB, channelValue.B);
-  analogWrite(pinCW, channelValue.CW);
   analogWrite(pinWW, channelValue.WW);
+  analogWrite(pinCW, channelValue.CW);
 }
 
 void StripControle::off(){
