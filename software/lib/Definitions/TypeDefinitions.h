@@ -28,6 +28,10 @@ typedef struct{
   unsigned char sensitivity;
   unsigned int position;
   unsigned int length;
+  unsigned int minBrightnes;
+  unsigned int maxBrightnes;
+  unsigned int timeVariance;
+  unsigned int maxBrightnesVariance;
 } varSilo;
 
 //Supported LED Strip Types

@@ -42,7 +42,15 @@ void AnimationHandlerPWM::handle(){
             sound2Light(strip);
             break;
         case BREATHE:
-            breathe(strip);
+            breathe(
+              strip,
+              silo->colorValue,
+              silo->time,
+              silo->minBrightnes,
+              silo->maxBrightnes,
+              silo->timeVariance,
+              silo->maxBrightnesVariance
+            );
             break;
         default:
             debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);

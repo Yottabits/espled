@@ -122,15 +122,20 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Silo->colorValue.G = doc["color"][1];
   Silo->colorValue.B = doc["color"][2];
   Silo->colorValue.WW = doc["color"][3];
-  Silo->colorValue.CW = doc["color"][4  ];
+  Silo->colorValue.CW = doc["color"][4];
   Silo->time = doc["time"];
   Silo->frequency = doc["frequency"];
   Silo->sensitivity = doc["sensitivity"];
   Silo->length = doc["length"];
   Silo->position = doc["position"];
+  Silo->minBrightnes = doc["minBrightnes"];
+  Silo->maxBrightnes = doc["maxBrightnes"];
+  Silo->timeVariance = doc["timeVariance"];
+  Silo->maxBrightnesVariance = doc["maxBrightnesVariance"];
 
 
-  debugFkt("Message arrived", INFO);
+  debugFkt("Message arrived, Length: " + String(length), INFO);
+
   debugFkt("Parsed Values", DEBUG);
   debugFkt("Mode: " + String(Silo->mode), DEBUG);
   debugFkt("(R-G-B-CW-WW): "+(String)Silo->colorValue.R+ "-" + (String)Silo->colorValue.G+ "-" + (String)Silo->colorValue.B+ "-" + (String)Silo->colorValue.CW+ "-" + (String)Silo->colorValue.WW,DEBUG);
@@ -139,6 +144,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   debugFkt("sensitivity: " + String(Silo->sensitivity), DEBUG);
   debugFkt("length: " + String(Silo->length), DEBUG);
   debugFkt("position: " + String(Silo->position), DEBUG);
+  debugFkt("maxBrightnes: " + String(Silo->maxBrightnes), DEBUG);
+  debugFkt("minBrightnes: " + String(Silo->minBrightnes), DEBUG);
+  debugFkt("timeVariance: " + String(Silo->timeVariance), DEBUG);
+  debugFkt("maxBrightnesVariance: " + String(Silo->maxBrightnesVariance), DEBUG);
 
   *varSiloChanged = true;
 }
