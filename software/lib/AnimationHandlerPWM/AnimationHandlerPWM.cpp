@@ -3,52 +3,49 @@
 
 extern void debugFkt(String, LogLevel);
 
-AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged){
+AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged)
+ : AnimationHandler{silo, varSiloChanged}{
     this->strip = strip;
-    this->silo = silo;
-    this->varSiloChanged = varSiloChanged;
-}
+  }
 
 
 void AnimationHandlerPWM::handle(){
     //Switch Case that calls the apropriate Function for Handeling the currently selected Mode
     //All Modes are Implemented as one Function in the folder Modes
 
-    //Serial.print("Silo->time");
-    //Serial.println(silo->time);
+    unsigned int now = millis();
 
-
-    static long lastChange = 0;
-    static CRGBWW oldColor{0,0,0,0,0};
 
     if(*varSiloChanged){
-        lastChange = millis();
+        lastChange = now;
         oldColor = strip->getColor();
         *varSiloChanged = false;
     }
 
+    if(now > fpsTimer + UPDATE_TIME){
+      fpsTimer = now;
 
-    switch (silo->mode){
-        case FADE_2_COLOR:
-            //fade2Color(strip, silo->colorValue, silo->time, lastChange, oldColor);
-            break;
-        case BLINK_COLOR:
-            //blinkColor(strip, silo->colorValue, silo->time, lastChange, oldColor);
-            break;
-        case STROBE:
-            //strobe(strip);
-            break;
-        case SOUND_2_LIGHT:
-            //sound2Light(strip);
-            break;
-        case BREATHE:
-            //breathe();
-            break;
-        default:
-            debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
-            break;
+
+          switch (silo->mode){
+              case FADE_2_COLOR:
+                  strip->showColor(fade2Color());
+                  break;
+              case BLINK_COLOR:
+                  blinkColor();
+                  break;
+              case STROBE:
+                  strobe();
+                  break;
+              case SOUND_2_LIGHT:
+                  sound2Light();
+                  break;
+              case BREATHE:
+                  strip->showColor(breathe());
+                  break;
+              default:
+                  debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
+                  break;
+          }
+
     }
-
-    //set varSiloChanged back to False
 }
-;

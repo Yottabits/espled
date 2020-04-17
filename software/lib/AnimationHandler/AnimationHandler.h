@@ -5,12 +5,11 @@
 #include <TypeDefinitions.h>
 #include <PinDefinitions.h>
 
-//extern void debugFkt(String, LogLevel);
+extern void debugFkt(String, LogLevel);
 
 class AnimationHandler{
   public:
     AnimationHandler(varSilo* silo, bool* varSiloChanged);
-    void handle();
 
     CRGBWW fade2Color();
     CRGBWW blinkColor();
@@ -25,7 +24,8 @@ class AnimationHandler{
     long lastChange = 0;
     CRGBWW oldColor{0,0,0,0,0};
 
-    const unsigned int UPDATE_TIME = 16;
+    unsigned int fpsTimer = 0;
+    const unsigned int UPDATE_TIME = 1000/60;
 
 };
 

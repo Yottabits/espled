@@ -1,7 +1,7 @@
 #include <AnimationHandler.h>
 #include <FastLED.h>
 
-extern void debugFkt(String, LogLevel);
+//extern void debugFkt(String, LogLevel);
 
 #define min_f(a, b, c)  (fminf(a, fminf(b, c)))
 #define max_f(a, b, c)  (fmaxf(a, fmaxf(b, c)))
