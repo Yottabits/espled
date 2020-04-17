@@ -30,27 +30,19 @@ void AnimationHandlerPWM::handle(){
 
     switch (silo->mode){
         case FADE_2_COLOR:
-            fade2Color(strip, silo->colorValue, silo->time, lastChange, oldColor);
+            //fade2Color(strip, silo->colorValue, silo->time, lastChange, oldColor);
             break;
         case BLINK_COLOR:
-            blinkColor(strip, silo->colorValue, silo->time, lastChange, oldColor);
+            //blinkColor(strip, silo->colorValue, silo->time, lastChange, oldColor);
             break;
         case STROBE:
-            strobe(strip);
+            //strobe(strip);
             break;
         case SOUND_2_LIGHT:
-            sound2Light(strip);
+            //sound2Light(strip);
             break;
         case BREATHE:
-            breathe(
-              strip,
-              silo->colorValue,
-              silo->time,
-              silo->minBrightnes,
-              silo->maxBrightnes,
-              silo->timeVariance,
-              silo->maxBrightnesVariance
-            );
+            //breathe();
             break;
         default:
             debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);

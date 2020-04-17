@@ -1,4 +1,4 @@
-#include "modes.h"
+#include <AnimationHandler.h>
 #include <FastLED.h>
 
 extern void debugFkt(String, LogLevel);
@@ -77,15 +77,10 @@ void hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer)
 
 
 
-void breathe(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, unsigned int minBrightnes, unsigned int maxBrightnes,  unsigned int timeVariance, unsigned int maxBrightnesVariance){
+CRGBWW AnimationHandler::breathe(){
 
-
-  static unsigned int timer = 0;
-  if(millis() > timer + 16){
-    timer = millis();
-
-    static int fadeTimeNoise = random16(-timeVariance, timeVariance);
-    static int maxBrightnesNoise = random16(-maxBrightnesVariance, maxBrightnesVariance);
+    static int fadeTimeNoise = random16(- silo->timeVariance, silo->timeVariance);
+    static int maxBrightnesNoise = random16(- silo->maxBrightnesVariance, silo->maxBrightnesVariance);
 
     static int noisedFadeTime = 0;
     static int noisedMaxBightnes = 0;
@@ -95,27 +90,26 @@ void breathe(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, unsig
     static float angularVelocity = 0;
 
 
-
     static unsigned int currentHSV[3] = {0,0,0};
     unsigned int now = millis();
     if(now > fadeTimer + noisedFadeTime){
         fadeTimer = now;
 
         //random16 only uint -> shift
-        fadeTimeNoise = random16(0, timeVariance*2) - timeVariance;
-        maxBrightnesNoise = random16(0, maxBrightnesVariance*2) - maxBrightnesVariance;
+        fadeTimeNoise = random16(0, silo->timeVariance*2) - silo->timeVariance;
+        maxBrightnesNoise = random16(0, silo->maxBrightnesVariance*2) - silo->maxBrightnesVariance;
 
-        noisedFadeTime = fadeTime + fadeTimeNoise;
-        noisedMaxBightnes = maxBrightnes +maxBrightnesNoise;
+        noisedFadeTime = silo->time + fadeTimeNoise;
+        noisedMaxBightnes = silo->maxBrightnes +maxBrightnesNoise;
 
         angularVelocity = (65535.0f)/(float)(noisedFadeTime);
     }
 
 
     int rawCos = -cos16((now-fadeTimer)*angularVelocity);
-    int currentBrightnes = map(rawCos,-32767,32767,minBrightnes,noisedMaxBightnes);
+    int currentBrightnes = map(rawCos,-32767,32767,silo->minBrightnes,noisedMaxBightnes);
 
-    CRGBWW newColor = setColor;
+    CRGBWW newColor = silo->colorValue;
     rgb2hsv(newColor, currentHSV);
     currentHSV[2] = currentBrightnes;
     hsv2rgb(currentHSV, newColor);
@@ -132,13 +126,5 @@ void breathe(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, unsig
 
       DEBUG);
 
-    strip->showColor(newColor);
-  }
-
-
-  //int rawSin = sin16(now*5);
-  //unsigned int mappedSin = map(rawSin,-32768,32767,0,1023);
-  //debugFkt(String(mappedSin), DEBUG);
-  //strip->showColor(CRGBWW{0,0,0,mappedSin,0});
-
+    return newColor;
 }

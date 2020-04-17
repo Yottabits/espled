@@ -1,6 +1,6 @@
 #include "AnimationHandlerBus.h"
 
-void AnimationHandlerBus::fade(CRGBWW value, double transitionTime){
+
 //case FIRE:
 //        fire();
 //        break;
@@ -14,6 +14,5 @@ void AnimationHandlerBus::fade(CRGBWW value, double transitionTime){
 //        strobeParts();
 //        break;
 //    case MOVING_PARTS:
-//        movingParts();     
+//        movingParts();
 //        break;
-}

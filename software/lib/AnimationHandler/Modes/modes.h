@@ -1,5 +1,4 @@
-#include <TypeDefinitions.h>
-#include <StripControle.h>
+
 
 //declare  Modes
 void fade2Color(StripControle* strip, CRGBWW setColor, unsigned int fadeTime, long lastChange, CRGBWW oldColor);
