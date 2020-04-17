@@ -302,7 +302,7 @@ void initFS(){
 
         serializeJson(json, Serial);
         if (!json.isNull()) {
-          debugFkt("\nparsed json", INFO);
+          debugFkt("parsed json", INFO);
 
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
@@ -344,7 +344,7 @@ void initStrip(){
   else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102_STRIP;
 
   if(type < 6){
-    debugFkt("Annimation handler, strip and Silo initialized", INFO);
+    debugFkt("Animation handler, strip and Silo initialized", INFO);
     Silo = new varSilo();
     simpleStrip = new StripControle(type);
     pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged);
@@ -355,7 +355,7 @@ void initStrip(){
   }
 }
 
-void runAnnimationHandler(){
+void runAnimationHandler(){
   if(type < 6){
     pwmHandler->handle();
   }
@@ -383,8 +383,7 @@ void setup(){
   initStrip();
 
   debugFkt("Ready", INFO);
-  debugFkt("IP address: ", INFO);
-  debugFkt(String(WiFi.localIP()), INFO);
+  debugFkt("IP address: " + WiFi.localIP().toString(), INFO);
   simpleStrip->showColor(CRGBWW{0,1023,0,1023,0});
   delay(500);
   simpleStrip->showColor(CRGBWW{0,0,0,0,0});
@@ -395,7 +394,7 @@ void loop() {
   ArduinoOTA.handle();
 
   //Run PWM Handler handle
-  runAnnimationHandler();
+  runAnimationHandler();
 
   //if(str)
   //TODO: Reconnect

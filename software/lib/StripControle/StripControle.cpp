@@ -1,4 +1,4 @@
-#include "StripControle.h"
+#include <StripControle.h>
 
 
 StripControle::StripControle(stripType type){

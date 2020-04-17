@@ -1,7 +1,5 @@
 #include <AnimationHandler.h>
 
-//extern void debugFkt(String, LogLevel);
-
 CRGBWW AnimationHandler::fade2Color(){
   debugFkt("Called fade2Color Mode Function", VERBOSE);
 
