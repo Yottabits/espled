@@ -9,12 +9,9 @@ CRGBWW AnimationHandler::breathe(){
     static int noisedFadeTime = 0;
     static int noisedMaxBightnes = 0;
 
-
     static unsigned int fadeTimer = 0;
     static float angularVelocity = 0;
 
-
-    static unsigned int currentHSV[3] = {0,0,0};
     unsigned int now = millis();
     if(now > fadeTimer + noisedFadeTime){
         fadeTimer = now;
