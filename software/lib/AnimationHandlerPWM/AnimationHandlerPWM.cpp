@@ -8,19 +8,23 @@ AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bo
     this->strip = strip;
   }
 
-
 void AnimationHandlerPWM::handle(){
     //Switch Case that calls the apropriate Function for Handeling the currently selected Mode
     //All Modes are Implemented as one Function in the folder Modes
 
     unsigned int now = millis();
 
-
     if(*varSiloChanged){
         lastChange = now;
         oldColor = strip->getColor();
         *varSiloChanged = false;
     }
+
+    if(now > audioTimer){
+      audioTimer = now;
+      recordAudioSample();
+    };
+
 
     if(now > fpsTimer + UPDATE_TIME){
       fpsTimer = now;
@@ -37,7 +41,7 @@ void AnimationHandlerPWM::handle(){
                   strobe();
                   break;
               case SOUND_2_LIGHT:
-                  sound2Light();
+                  strip->showColor(sound2Light());
                   break;
               case BREATHE:
                   strip->showColor(breathe());

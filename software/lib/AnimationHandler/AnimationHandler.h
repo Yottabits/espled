@@ -5,6 +5,8 @@
 #include <TypeDefinitions.h>
 #include <PinDefinitions.h>
 
+#define ringBufferSize 64
+
 extern void debugFkt(String, LogLevel);
 
 class AnimationHandler{
@@ -20,6 +22,8 @@ class AnimationHandler{
     void rgb2hsv(CRGBWW &rgbContainer, unsigned int hsvContainer[]);
     void hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer);
 
+    void recordAudioSample();
+
   protected:
     varSilo* silo;
     bool* varSiloChanged;
@@ -27,7 +31,12 @@ class AnimationHandler{
     CRGBWW oldColor{0,0,0,0,0};
 
     unsigned int fpsTimer = 0;
-    const unsigned int UPDATE_TIME = 1000/60;
+    unsigned int audioTimer = 0;
+
+    float audioRingBuffer[ringBufferSize];
+    unsigned int ringBufferCounter = 0;
+
+    unsigned int UPDATE_TIME = 16;
 
 };
 
