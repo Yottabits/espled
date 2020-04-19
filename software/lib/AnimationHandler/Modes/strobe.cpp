@@ -20,14 +20,14 @@ CRGBWW AnimationHandler::strobe(){
         if(nextOnOff == false){
             newColor = CRGBWW{0,0,0,0,0};
             debugFkt("sent Strobe State off", VERBOSE);
-            nextOnOff == true;
+            nextOnOff = true;
         }else{
             newColor.R = silo->colorValue.R;
             newColor.G = silo->colorValue.G;
             newColor.B = silo->colorValue.B;
             newColor.CW = silo->colorValue.CW;
             newColor.WW = silo->colorValue.WW;
-            nextOnOff == false;
+            nextOnOff = false;
             debugFkt("sent Strobe State on", VERBOSE);
         }
         
