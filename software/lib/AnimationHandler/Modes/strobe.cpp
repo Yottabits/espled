@@ -25,8 +25,8 @@ CRGBWW AnimationHandler::strobe(){
             newColor.R = silo->colorValue.R;
             newColor.G = silo->colorValue.G;
             newColor.B = silo->colorValue.B;
-            newColor.CW = silo->colorValue.CW;
             newColor.WW = silo->colorValue.WW;
+            newColor.CW = silo->colorValue.CW;
             nextOnOff = false;
             debugFkt("sent Strobe State on", VERBOSE);
         }
