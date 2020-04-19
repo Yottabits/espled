@@ -20,7 +20,7 @@
       1023,
       1023,
       1023
-  ]
+  ],
   "time":1000
 }
 ```
@@ -31,7 +31,7 @@
 ### Description:
 ### Parameters:
 ### Example JSON:
-'''
+``` JSON
 {
   "mode":1,
   "color":[
@@ -44,7 +44,7 @@
   "time":1000,
   "legth":3 
 }
-'''
+```
 
 ## 2 strobe
 
@@ -67,7 +67,7 @@ This mode realizes a breathing function. This means the whole strip gets dimmed 
 | maxBrightnesVariance | if set each breath a random amount of brightnes within the Interval [-maxBrightnesVariance <> +maxBrightnesVariance] gets added to maxBrightnes| PWM | 0 | 1023 |
 
 ### Example JSON:
-'''
+``` JSON
 {
   "mode":4,
   "color":[
@@ -76,11 +76,11 @@ This mode realizes a breathing function. This means the whole strip gets dimmed 
       0,
       0,
       0
-  ]
+  ],
   "time":6000,
   "minBrightnes":0,
   "maxBrightnes":1023,
   "timeVariance":3000,
   "maxBrightnesVariance":500
 }
-'''
+```
