@@ -89,4 +89,7 @@ See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 * Software
   - Add all options to configuration mode
 * Case
+
+## nice Projects with led animations for insperation
 * GoodListOfAnimations for individually addressable strips: https://www.tweaking4all.com/hardware/arduino/arduino-all-ledstrip-effects-in-one/
+* https://github.com/Aircoookie/WLED/wiki
