@@ -5,6 +5,7 @@ CRGBWW AnimationHandler::strobe(){
     
      if(this->silo->frequency == 0 || this->silo->frequency > 60){
        debugFkt("Frequency was set to 0 or over 60 this is not possible", ERROR);
+       return CRGBWW{0,0,0,0,0};
     }
 
     long now = millis();
