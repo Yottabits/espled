@@ -28,7 +28,7 @@ varSilo* Silo;
 
 bool* varSiloChanged = new bool(false);
 
-
+const unsigned int pwmFreq = 1000;
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
@@ -42,7 +42,7 @@ bool shouldSaveConfig = false;
 
 const char* mqtt_device_id = "/rgbController/";
 
-const LogLevel LOGLEVEL = DEBUG;
+const LogLevel LOGLEVEL = VERBOSE;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
@@ -336,6 +336,8 @@ void initPins(){
   digitalWrite(pinB, LOW);
   digitalWrite(pinWW, LOW);
   digitalWrite(pinCW, LOW);
+
+  analogWriteFreq(pwmFreq);
 }
 
 void initStrip(){
@@ -391,7 +393,11 @@ void setup(){
   simpleStrip->showColor(CRGBWW{0,0,0,0,0});
 }
 
+unsigned int cycleCount = 0;
+unsigned int freeHeap = 0;
+
 void loop() {
+  cycleCount = ESP.getCycleCount();
   //OTA Handler
   ArduinoOTA.handle();
 
@@ -401,4 +407,12 @@ void loop() {
   //if(str)
   //TODO: Reconnect
   client.loop();
+
+  if(!(millis() % 500)){
+    debugFkt(
+      "cycleCount: " + String(ESP.getCycleCount() - cycleCount) +
+      " LoopTime: " + String((ESP.getCycleCount() - cycleCount) / 80000.0) + "ms" +
+      " freeHeap: " + String(ESP.getFreeHeap() / 1000.0) + "kB"
+    , VERBOSE);
+  }
 }
