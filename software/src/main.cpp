@@ -209,7 +209,7 @@ void initWifi()
 
   //After the WiFi Manger is done, we are most probably connected
   debugFkt("local ip", INFO);
-  debugFkt(String(WiFi.localIP()), INFO);
+  debugFkt(WiFi.localIP().toString(), INFO);
 
 
   strcpy(mqtt_server, custom_mqtt_server.getValue());
