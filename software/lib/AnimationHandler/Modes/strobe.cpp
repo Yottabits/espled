@@ -2,17 +2,17 @@
 
 CRGBWW AnimationHandler::strobe(){
     debugFkt("Called strobe mode function", VERBOSE);
-    
+
      if(this->silo->frequency == 0 || this->silo->frequency > 60){
        debugFkt("Frequency was set to 0 or over 60 this is not possible", ERROR);
        return CRGBWW{0,0,0,0,0};
     }
 
-    long now = millis();
-    static long lastStateChange = now;
+    unsigned int now = millis();
+    static unsigned int lastStateChange = 0;
     long period = (1000/this->silo->frequency);
     static bool nextOnOff = false;
-    CRGBWW newColor;
+    static CRGBWW newColor;
 
     if(now >= lastStateChange + period){
         lastStateChange = now;
@@ -28,9 +28,9 @@ CRGBWW AnimationHandler::strobe(){
             newColor.WW = silo->colorValue.WW;
             newColor.CW = silo->colorValue.CW;
             nextOnOff = false;
-            debugFkt("sent Strobe State on", VERBOSE);
+            debugFkt("sent Strobe State on with Value: " + String(newColor.R) +  "-" + String(newColor.G) +  "-" + String(newColor.B) +  "-" + String(newColor.WW) +  "-" + String(newColor.CW), VERBOSE);
         }
-        
+
     }
 
   return newColor;

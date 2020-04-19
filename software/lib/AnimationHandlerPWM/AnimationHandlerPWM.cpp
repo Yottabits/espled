@@ -38,7 +38,7 @@ void AnimationHandlerPWM::handle(){
                   blinkColor();
                   break;
               case STROBE:
-                  strobe();
+                  strip->showColor(strobe());
                   break;
               case SOUND_2_LIGHT:
                   strip->showColor(sound2Light());
