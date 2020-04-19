@@ -11,7 +11,7 @@
 | time      | time until the end color is reached | milliseconds | 0 | 4294967295 ~ 49.7d   |
 
 ### Example JSON:
-'''
+``` JSON
 {
   "mode":0,
   "color":[
@@ -23,7 +23,7 @@
   ]
   "time":1000
 }
-'''
+```
 
 
 ## 1 blinkColor
