@@ -58,6 +58,34 @@ This mode should be used for notifictaion. The Controller will store it's curren
 ```
 
 ## 2 strobe
+### Description:
+This mode lights up the strip in the selected color and blinks it on/off in the selected frequency - no fading.
+
+### Parameters:
+| Parameter | Effect | Unit | min. | man. |
+|-----------|--------|------|------|------|
+| mode      | changes Mode |  t    |  2    |  2    |
+| color     | defines color in an Red-Green-Blue-WarmWhite-ColdWhite array | PWM  | 0    | 1023 |
+| frequency      | changes the strobe frequency |  Hz    |  1    |  60    |
+
+### Example JSON:
+``` JSON
+{
+  "mode":4,
+  "color":[
+      1023,
+      0,
+      0,
+      0,
+      0
+  ],
+  "time":6000,
+  "minBrightnes":0,
+  "maxBrightnes":1023,
+  "timeVariance":3000,
+  "maxBrightnesVariance":500
+}
+```
 
 ## 3 sound2Light
 
