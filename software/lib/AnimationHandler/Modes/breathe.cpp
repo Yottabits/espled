@@ -12,6 +12,19 @@ CRGBWW AnimationHandler::breathe(){
     static unsigned int fadeTimer = 0;
     static float angularVelocity = 0;
 
+    // Catch possible undefined Configurations
+    if(silo->time > silo->timeVariance){
+      debugFkt("timeVariance higher than time variable - set timeVariance to 0",ERROR);
+      silo->timeVariance = 0;    
+    }
+    if(silo->maxBrightnesVariance + silo->maxBrightnes > 1023){
+      debugFkt("maxBrightnesVariance and maxBrightnes can leed to undefined behaviour - set Variance to 0 and maxBrightnes to 1023",ERROR);
+      silo->maxBrightnes = 1023;
+      silo->maxBrightnesVariance = 0;
+    }
+
+
+
     unsigned int now = millis();
     if(now > fadeTimer + noisedFadeTime){
         fadeTimer = now;
