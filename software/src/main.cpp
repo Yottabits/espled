@@ -156,6 +156,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void initMQTT() {
   // Loop until we're reconnected
+  byte reconnectCounter = 0;
   while (!client.connected())
   {
     debugFkt("Attempting MQTT connection with:", INFO);
@@ -172,7 +173,7 @@ void initMQTT() {
 
       //Publish Info that Board Connected
       client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));
-      
+
 
       debugFkt("Main Topic: ", INFO);
       debugFkt(mainTopic, INFO);
@@ -185,6 +186,8 @@ void initMQTT() {
       debugFkt("failed, rc=", ERROR);
       debugFkt(String(client.state()), ERROR);
       debugFkt("Try again in 5 seconds", ERROR);
+      if(reconnectCounter++ > 10) ESP.restart();
+
       // Wait 5 seconds before retrying
       delay(5000);
     }
