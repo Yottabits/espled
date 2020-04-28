@@ -11,7 +11,7 @@ extern void debugFkt(String, LogLevel);
 
 class AnimationHandler{
   public:
-    AnimationHandler(varSilo* silo, bool* varSiloChanged);
+    AnimationHandler(varSilo* silo, bool* varSiloChanged, MicHandler* micHandler);
 
     CRGBWW fade2Color();
     CRGBWW blinkColor();
@@ -28,7 +28,7 @@ class AnimationHandler{
     long lastChange = 0;
     CRGBWW oldColor{0,0,0,0,0};
 
-    MicHandler micHandler();
+    MicHandler* micHandler;
 
     unsigned int fpsTimer = 0;
     unsigned int UPDATE_TIME = 16;

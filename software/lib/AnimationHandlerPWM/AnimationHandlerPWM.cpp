@@ -3,8 +3,8 @@
 
 extern void debugFkt(String, LogLevel);
 
-AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged)
- : AnimationHandler{silo, varSiloChanged}{
+AnimationHandlerPWM::AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged, MicHandler* micHandler)
+ : AnimationHandler{silo, varSiloChanged, micHandler}{
     this->strip = strip;
   }
 

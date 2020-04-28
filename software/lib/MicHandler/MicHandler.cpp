@@ -1,5 +1,9 @@
 #include <MicHandler.h>
 
+MicHandler::MicHandler(varSilo* silo){
+  this->silo = silo;
+}
+
 void MicHandler::printVector(double *vData, uint16_t bufferSize)
 {
   for (uint16_t i = 0; i < (bufferSize >> 1); i++)

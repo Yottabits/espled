@@ -4,7 +4,7 @@
 
 class AnimationHandlerPWM : AnimationHandler{
   public:
-    AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged);
+    AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged, MicHandler* micHandler);
     void handle();
 
   private:

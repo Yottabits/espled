@@ -49,6 +49,8 @@ WiFiManager wifiManager;
 PubSubClient client(espClient);
 
 StripControle* simpleStrip;
+MicHandler* micHandler;
+
 AnimationHandlerPWM* pwmHandler;
 AnimationHandlerBus* busHandler;
 //TODO: Adressable Strip
@@ -354,11 +356,14 @@ void initStrip(){
   else if(strcmp(strip_type, "WS2812") == 0) type = stripType::WS2812_STRIP;
   else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102_STRIP;
 
+  Silo = new varSilo();
+  micHandler = new MicHandler(Silo);
+
   if(type < 6){
     debugFkt("Animation handler, strip and Silo initialized", INFO);
-    Silo = new varSilo();
+
     simpleStrip = new StripControle(type);
-    pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged);
+    pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged, micHandler);
   }
   else{
     //TODO

@@ -6,6 +6,7 @@
 #include <TypeDefinitions.h>
 #include <PinDefinitions.h>
 
+
 #define samplingFrequency 1000
 #define ringBufferSize 64
 
@@ -13,6 +14,8 @@ extern void debugFkt(String, LogLevel);
 
 class MicHandler{
   public:
+    MicHandler(varSilo *silo);
+
     void handleMic();
     void calculateFFT();
     void getMaxAmplitude();
@@ -24,6 +27,7 @@ class MicHandler{
   private:
     void recordAudioSample();
 
+    varSilo* silo;
 
     arduinoFFT FFT = arduinoFFT();
     double fourierBufferReal[ringBufferSize];

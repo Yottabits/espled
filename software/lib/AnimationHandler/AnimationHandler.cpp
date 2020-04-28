@@ -1,8 +1,9 @@
 #include <AnimationHandler.h>
 
-AnimationHandler::AnimationHandler(varSilo* silo, bool* varSiloChanged){
+AnimationHandler::AnimationHandler(varSilo* silo, bool* varSiloChanged, MicHandler* micHandler){
     this->silo = silo;
     this->varSiloChanged = varSiloChanged;
+    this->micHandler = micHandler;
 }
 
 
