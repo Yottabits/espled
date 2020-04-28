@@ -76,6 +76,6 @@ void AnimationHandler::hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer
 }
 
 void AnimationHandler::recordAudioSample(){
-      audioRingBuffer[ringBufferCounter++] = analogRead(A0)/1024.0;
+      //audioRingBuffer[ringBufferCounter++] = analogRead(A0)/1024.0;
       if(ringBufferCounter == ringBufferSize) ringBufferCounter = 0;
   }

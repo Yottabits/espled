@@ -62,7 +62,7 @@ CRGBWW AnimationHandler::breathe(){
       " fadeTimeNoise: " + String(fadeTimeNoise) +
       " maxBrightnesNoise: " + String(maxBrightnesNoise),
 
-      DEBUG);
+      VERBOSE);
 
     return newColor;
 }
