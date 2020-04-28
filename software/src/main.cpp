@@ -170,16 +170,14 @@ void initMQTT() {
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
 
+      //Publish Info that Board Connected
+      client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));
+      
+
       debugFkt("Main Topic: ", INFO);
       debugFkt(mainTopic, INFO);
-
       debugFkt("-------------", INFO);
 
-      char readyTopic[80];
-      strcat(readyTopic, mainTopic);
-      strcat(readyTopic, "/status");
-
-      client.publish(readyTopic, "ready");
       client.subscribe(mainTopic);
     }
     else
