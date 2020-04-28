@@ -8,6 +8,8 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
+
+
 #include <PubSubClient.h>
 #include <TypeDefinitions.h>
 #include <PinDefinitions.h>
@@ -36,6 +38,10 @@ char strip_type[8] = "RGB";
 char mainTopic[80] = "/ESPLED/";
 char debugTopic[80];
 
+
+const char* fingerprint = "A6 AE 85 65 63 DD D8 7C 70 F7 92 73 DE 8F 18 2B 9F DA 0A 76";
+
+
 stripType type;
 
 bool shouldSaveConfig = false;
@@ -44,8 +50,9 @@ const char* mqtt_device_id = "/rgbController/";
 
 const LogLevel LOGLEVEL = VERBOSE;
 
-WiFiClient espClient;
 WiFiManager wifiManager;
+WiFiClientSecure espClient;
+
 PubSubClient client(espClient);
 
 StripControle* simpleStrip;
@@ -154,17 +161,37 @@ void callback(char* topic, byte* payload, unsigned int length) {
   *varSiloChanged = true;
 }
 
+void verifytls() {
+  // Use WiFiClientSecure class to create TLS connection
+  Serial.print("connecting to ");
+  Serial.println(mqtt_server);
+  if (!espClient.connect(mqtt_server, 443)) {
+    Serial.println("connection failed");
+    return;
+  }
+
+  if (espClient.verify(fingerprint, mqtt_server)) {
+    Serial.println("certificate matches");
+  } else {
+    Serial.println("certificate doesn't match");
+  }
+}
+
+
+
 void initMQTT() {
+  
   // Loop until we're reconnected
   while (!client.connected())
   {
+    verifytls();
     debugFkt("Attempting MQTT connection with:", INFO);
     debugFkt(mqtt_server, INFO);
     debugFkt(String(atoi(mqtt_port)), INFO);
     // Create a random client ID
     String clientId = "RGB-Controller";
     // Attempt to connect
-    if (client.connect(clientId.c_str())) {
+    if (client.connect(clientId.c_str(),"espled-bed", "YmJzpmPpr48gVdmWWA")) {
       //Publish Info that Board Connected
       client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));    
       
