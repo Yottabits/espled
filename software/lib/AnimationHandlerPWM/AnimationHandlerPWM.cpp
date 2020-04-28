@@ -20,12 +20,6 @@ void AnimationHandlerPWM::handle(){
         *varSiloChanged = false;
     }
 
-    if(now > audioTimer){
-      audioTimer = now;
-      recordAudioSample();
-    };
-
-
     if(now > fpsTimer + UPDATE_TIME){
       fpsTimer = now;
 

@@ -74,8 +74,3 @@ void AnimationHandler::hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer
     rgbContainer.G = (unsigned int)(g * 1023); // dst_r : 0-255
     rgbContainer.B = (unsigned int)(b * 1023); // dst_r : 0-255
 }
-
-void AnimationHandler::recordAudioSample(){
-      //audioRingBuffer[ringBufferCounter++] = analogRead(A0)/1024.0;
-      if(ringBufferCounter == ringBufferSize) ringBufferCounter = 0;
-  }
