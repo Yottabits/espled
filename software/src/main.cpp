@@ -165,20 +165,18 @@ void initMQTT() {
     String clientId = "RGB-Controller";
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
+      //Publish Info that Board Connected
+      client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));    
+      
+      //setup main Topic and debug topic path in mqtt
       strcat(mainTopic, WiFi.macAddress().c_str());
       strcat(debugTopic, mainTopic);
       strcat(debugTopic, "/debug");
 
       debugFkt("Main Topic: ", INFO);
       debugFkt(mainTopic, INFO);
-
       debugFkt("-------------", INFO);
 
-      char readyTopic[80];
-      strcat(readyTopic, mainTopic);
-      strcat(readyTopic, "/status");
-
-      client.publish(readyTopic, "ready");
       client.subscribe(mainTopic);
     }
     else
