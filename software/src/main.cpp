@@ -28,7 +28,7 @@ varSilo* Silo;
 
 bool* varSiloChanged = new bool(false);
 
-const unsigned int pwmFreq = 1000;
+const unsigned int pwmFreq = 2000;
 
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
@@ -42,7 +42,7 @@ bool shouldSaveConfig = false;
 
 const char* mqtt_device_id = "/rgbController/";
 
-const LogLevel LOGLEVEL = VERBOSE;
+const LogLevel LOGLEVEL = INFO;
 
 WiFiClient espClient;
 WiFiManager wifiManager;
@@ -163,11 +163,12 @@ void initMQTT() {
     debugFkt(String(atoi(mqtt_port)), INFO);
     // Create a random client ID
     String clientId = "RGB-Controller";
+
+    client.setServer(mqtt_server, atoi(mqtt_port));
+    client.setCallback(callback);
+
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
-      strcat(mainTopic, WiFi.macAddress().c_str());
-      strcat(debugTopic, mainTopic);
-      strcat(debugTopic, "/debug");
 
       debugFkt("Main Topic: ", INFO);
       debugFkt(mainTopic, INFO);
@@ -194,6 +195,13 @@ void initMQTT() {
 
 void initWifi()
 {
+  //Prepare MQTT Topics
+
+  strcat(mainTopic, WiFi.macAddress().c_str());
+  strcat(debugTopic, mainTopic);
+  strcat(debugTopic, "/debug");
+
+
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
@@ -237,8 +245,6 @@ void initWifi()
     configFile.close();
     //end save
   }
-  client.setServer(mqtt_server, atoi(mqtt_port));
-  client.setCallback(callback);
 }
 
 
@@ -393,21 +399,32 @@ void setup(){
   simpleStrip->showColor(CRGBWW{0,0,0,0,0});
 }
 
+void handleReconnect(){
+  if(!client.connected()) {
+      initMQTT();
+    }
+}
+
 unsigned int cycleCount = 0;
 unsigned int freeHeap = 0;
 
 void loop() {
-  cycleCount = ESP.getCycleCount();
+  //cycleCount = ESP.getCycleCount();
   //OTA Handler
   ArduinoOTA.handle();
 
   //Run PWM Handler handle
   runAnimationHandler();
 
-  //if(str)
-  //TODO: Reconnect
+  //Reconnect MQTT if conenction is lost
+  handleReconnect();
+
+  //Handle MQTT routine
   client.loop();
 
+
+
+  //Debug system resources
   if(!(millis() % 500)){
     debugFkt(
       "cycleCount: " + String(ESP.getCycleCount() - cycleCount) +
