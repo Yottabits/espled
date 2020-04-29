@@ -1,7 +1,21 @@
 #include <MicHandler.h>
 
+extern "C" {
+#include "user_interface.h"
+}
+
 MicHandler::MicHandler(varSilo* silo){
   this->silo = silo;
+}
+
+void MicHandler::handleMic(){
+ unsigned int now = millis();
+
+
+  if(now > audioTimer + samplingDelay && silo->mode == SOUND_2_LIGHT){
+    audioTimer = now;
+    recordAudioSample();
+  }
 }
 
 void MicHandler::printVector(double *vData, uint16_t bufferSize)
@@ -40,6 +54,6 @@ void MicHandler::calculateFFT(){
 }
 
 void MicHandler::recordAudioSample(){
-      audioRingBuffer[ringBufferCounter++] = analogRead(A0)/1024.0;
+      audioRingBuffer[ringBufferCounter++] = system_adc_read()/1024.0;
       if(ringBufferCounter == ringBufferSize) ringBufferCounter = 0;
   }

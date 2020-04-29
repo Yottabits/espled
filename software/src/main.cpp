@@ -422,6 +422,9 @@ void loop() {
   //Run PWM Handler handle
   runAnimationHandler();
 
+  //Run Microphone Handler handle
+  micHandler->handleMic();
+
   //Reconnect MQTT if conenction is lost
   handleReconnect();
 

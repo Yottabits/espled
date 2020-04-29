@@ -8,6 +8,7 @@
 
 
 #define samplingFrequency 1000
+#define samplingDelay 1000/samplingFrequency
 #define ringBufferSize 64
 
 extern void debugFkt(String, LogLevel);
@@ -26,7 +27,6 @@ class MicHandler{
 
   private:
     void recordAudioSample();
-
     varSilo* silo;
 
     arduinoFFT FFT = arduinoFFT();
