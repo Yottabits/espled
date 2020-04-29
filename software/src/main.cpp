@@ -8,8 +8,6 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
-
-
 #include <PubSubClient.h>
 #include <TypeDefinitions.h>
 #include <PinDefinitions.h>
@@ -21,10 +19,6 @@
 //--Includes--------------------------------------------------------------------
 
 
-
-
-//init verSilo
-
 //ToDo Fix typo
 varSilo* Silo;
 
@@ -35,10 +29,14 @@ const unsigned int pwmFreq = 1000;
 char mqtt_server[40];
 char mqtt_port[6] = "8080";
 char strip_type[8] = "RGB";
+char mqtt_ssl[3] = "no";
+char mqtt_username[40] = "esp";
+char mqtt_password[40] = "supersecurepassword";
+
 char mainTopic[80] = "/ESPLED/";
 char debugTopic[80];
 
-
+//Fingerprint of odroid
 const char* fingerprint = "A6 AE 85 65 63 DD D8 7C 70 F7 92 73 DE 8F 18 2B 9F DA 0A 76";
 
 
@@ -48,12 +46,14 @@ bool shouldSaveConfig = false;
 
 const char* mqtt_device_id = "/rgbController/";
 
-const LogLevel LOGLEVEL = VERBOSE;
+const LogLevel LOGLEVEL = INFO;
 
 WiFiManager wifiManager;
-WiFiClientSecure espClient;
 
-PubSubClient client(espClient);
+WiFiClient espClient;
+WiFiClientSecure espClientSecure;
+
+PubSubClient client;
 
 StripControle* simpleStrip;
 AnimationHandlerPWM* pwmHandler;
@@ -161,56 +161,77 @@ void callback(char* topic, byte* payload, unsigned int length) {
   *varSiloChanged = true;
 }
 
-void verifytls() {
-  // Use WiFiClientSecure class to create TLS connection
-  Serial.print("connecting to ");
-  Serial.println(mqtt_server);
-  if (!espClient.connect(mqtt_server, 443)) {
-    Serial.println("connection failed");
-    return;
-  }
-
-  if (espClient.verify(fingerprint, mqtt_server)) {
-    Serial.println("certificate matches");
-  } else {
-    Serial.println("certificate doesn't match");
-  }
-}
-
 
 
 void initMQTT() {
-  
+  if(strcmp(mqtt_ssl, "yes") == 0){
+    client = PubSubClient(espClientSecure);
+    debugFkt("Will compare SSL-Fingerprint and use WifiClientSecure", INFO);
+    espClientSecure.setFingerprint(fingerprint);
+  }else{
+    client = PubSubClient(espClient);
+    debugFkt("Will not use SSL -> Standard WifiClient", INFO);
+  }
+
+  //set the server and callback function
+  client.setServer(mqtt_server, atoi(mqtt_port));
+  client.setCallback(callback);
+
+
   // Loop until we're reconnected
   while (!client.connected())
   {
-    verifytls();
-    debugFkt("Attempting MQTT connection with:", INFO);
+    debugFkt("Attempting MQTT connection with: [server, port, ssl, user, pw]", INFO);
     debugFkt(mqtt_server, INFO);
     debugFkt(String(atoi(mqtt_port)), INFO);
-    // Create a random client ID
+    debugFkt(mqtt_ssl, INFO);
+    debugFkt(mqtt_username, INFO);
+    debugFkt(mqtt_password, INFO);
+
+
+    // Create a client ID
     String clientId = "RGB-Controller";
+
+
     // Attempt to connect
-    if (client.connect(clientId.c_str(),"espled-bed", "YmJzpmPpr48gVdmWWA")) {
-      //Publish Info that Board Connected
-      client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));    
-      
+    bool connected = false;
+    if(strcmp(mqtt_ssl, "yes") == 0){
+      debugFkt("connecting to mqtt server with password and username", INFO);
+      connected = client.connect(clientId.c_str(), mqtt_username, mqtt_password);
+    }else{
+      debugFkt("connecting to mqtt server without username and password", INFO);
+      connected = client.connect(clientId.c_str()); 
+    }
+
+    //react to outcome of connect try
+    if (connected) {
       //setup main Topic and debug topic path in mqtt
       strcat(mainTopic, WiFi.macAddress().c_str());
       strcat(debugTopic, mainTopic);
       strcat(debugTopic, "/debug");
 
-      debugFkt("Main Topic: ", INFO);
+      debugFkt("Now Connected - Main Topic of this device: ", INFO);
       debugFkt(mainTopic, INFO);
       debugFkt("-------------", INFO);
 
+      //subscribe this device's topic
       client.subscribe(mainTopic);
+    
+      debugFkt("subscribed main Topic ", INFO);
+      
+      //Publish Info that Board Connected
+      //client.publish("/ESPLED/",WiFi.macAddress().c_str());
+      String HelloMessage = "espled-board "+ WiFi.macAddress() + " connected";
+      client.publish("/ESPLED/", HelloMessage.c_str());    
+      
     }
     else
     {
+      //Display Error and retry
       debugFkt("failed, rc=", ERROR);
       debugFkt(String(client.state()), ERROR);
       debugFkt("Try again in 5 seconds", ERROR);
+      
       // Wait 5 seconds before retrying
       delay(5000);
     }
@@ -222,12 +243,18 @@ void initWifi()
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
+  WiFiManagerParameter custom_mqtt_ssl("ssl", "no", mqtt_ssl, 3);
+  WiFiManagerParameter custom_mqtt_username("mqtt_username", "username", mqtt_username, 40);
+  WiFiManagerParameter custom_mqtt_password("mqtt_password", "password", mqtt_password, 40);
 
   wifiManager.setSaveConfigCallback(saveConfigCallback);
 
   wifiManager.addParameter(&custom_mqtt_server);
   wifiManager.addParameter(&custom_mqtt_port);
   wifiManager.addParameter(&custom_strip_type);
+  wifiManager.addParameter(&custom_mqtt_ssl);
+  wifiManager.addParameter(&custom_mqtt_username);
+  wifiManager.addParameter(&custom_mqtt_password);
 
   wifiManager.autoConnect("RGB Controller Setup");
   wifiManager.setConfigPortalTimeout(180);
@@ -240,6 +267,10 @@ void initWifi()
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
   strcpy(strip_type, custom_strip_type.getValue());
+  strcpy(mqtt_ssl, custom_mqtt_ssl.getValue());
+  strcpy(mqtt_username, custom_mqtt_username.getValue());
+  strcpy(mqtt_password, custom_mqtt_password.getValue());
+
 
   //save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -251,6 +282,10 @@ void initWifi()
     json["mqtt_server"] = mqtt_server;
     json["mqtt_port"] = mqtt_port;
     json["strip_type"] = strip_type;
+    json["mqtt_ssl"] = mqtt_ssl;
+    json["mqtt_username"] = mqtt_username;
+    json["mqtt_password"] = mqtt_password;
+
 
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {
@@ -262,8 +297,6 @@ void initWifi()
     configFile.close();
     //end save
   }
-  client.setServer(mqtt_server, atoi(mqtt_port));
-  client.setCallback(callback);
 }
 
 
@@ -334,6 +367,9 @@ void initFS(){
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
           strcpy(strip_type, json["strip_type"]);
+          strcpy(mqtt_ssl, json["mqtt_ssl"]);
+          strcpy(mqtt_username, json["mqtt_username"]);
+          strcpy(mqtt_password, json["mqtt_password"]);
 
         } else {
           debugFkt("failed to load json config", ERROR);
