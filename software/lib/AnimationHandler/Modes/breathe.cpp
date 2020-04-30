@@ -13,7 +13,7 @@ CRGBWW AnimationHandler::breathe(){
     static float angularVelocity = 0;
 
     // Catch possible undefined Configurations
-    if(silo->time > silo->timeVariance){
+    if(silo->time < silo->timeVariance){
       debugFkt("timeVariance higher than time variable - set timeVariance to 0",ERROR);
       silo->timeVariance = 0;    
     }
