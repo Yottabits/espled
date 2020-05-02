@@ -205,7 +205,7 @@ void initMQTT() {
       connected = client.connect(clientId.c_str(), mqtt_username, mqtt_password);
     }else{
       debugFkt("connecting to mqtt server without username and password", INFO);
-      connected = client.connect(clientId.c_str()); 
+      connected = client.connect(clientId.c_str());
     }
 
     //react to outcome of connect try
@@ -215,8 +215,6 @@ void initMQTT() {
       strcat(debugTopic, mainTopic);
       strcat(debugTopic, "/debug");
 
-      //Publish Info that Board Connected in /ESPLED/Topic
-      client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));
 
       debugFkt("Now Connected - Main Topic of this device: ", INFO);
       debugFkt(mainTopic, INFO);
@@ -224,14 +222,18 @@ void initMQTT() {
 
       //subscribe this device's topic
       client.subscribe(mainTopic);
-    
+
       debugFkt("subscribed main Topic ", INFO);
-      
+
       //Publish Info that Board Connected
       //client.publish("/ESPLED/",WiFi.macAddress().c_str());
       String HelloMessage = "espled-board "+ WiFi.macAddress() + " connected";
-      client.publish("/ESPLED/", HelloMessage.c_str());    
-      
+      client.publish("/ESPLED/", HelloMessage.c_str());
+
+      //Publish Info that Board Connected in /ESPLED/Topic
+      client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));
+
+
     }
     else
     {
@@ -251,13 +253,6 @@ void initMQTT() {
 
 void initWifi()
 {
-  //Prepare MQTT Topics
-
-  strcat(mainTopic, WiFi.macAddress().c_str());
-  strcat(debugTopic, mainTopic);
-  strcat(debugTopic, "/debug");
-
-
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
