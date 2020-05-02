@@ -8,5 +8,7 @@
 #define pinWW 12
 #define pinCW 13
 #define pinM 2
+#define pinMicrophone A0
+#define pinSensor 4
 //------------------------------------------------------------------------------
 #endif
