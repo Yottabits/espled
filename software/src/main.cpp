@@ -4,6 +4,9 @@
 
 
 void debugFkt(String message, LogLevel LevelOfMessage){
+  // Function which handles the debugging
+  // Prints messages depending on log_level to MQTT and Serial
+  
   if(LOGLEVEL <= LevelOfMessage){
     //Add Level to message
     switch (LevelOfMessage)
