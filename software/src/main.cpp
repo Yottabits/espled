@@ -64,6 +64,8 @@ void runAnimationHandler(){
 void setup(){
   initPins();
 
+  dht.setup(pinSensor, DHTesp::DHT11);
+
   firmmareReset();
   Serial.begin(115200);
   delay(50);
@@ -88,10 +90,19 @@ void handleReconnect(){
     }
 }
 
-unsigned int cycleCount = 0;
-unsigned int freeHeap = 0;
+void handleSensor(){
+  if(!(millis() % 10000)){
+    debugFkt("Transmit temperature at " + (String(mainTopic) + String("/temperature")), VERBOSE);
+    client.publish((String(mainTopic) + String("/temperature")).c_str(), String(dht.getTemperature()).c_str());
+    client.publish((String(mainTopic) + String("/humidity")).c_str(), String(dht.getHumidity()).c_str());
+}
+}
+
+
 
 void loop() {
+  unsigned int cycleCount = 0;
+  unsigned int freeHeap = 0;
   //cycleCount = ESP.getCycleCount();
   //OTA Handler
   ArduinoOTA.handle();
@@ -108,18 +119,16 @@ void loop() {
   //Handle MQTT routine
   client.loop();
 
-
+  //Transmit sensor data
+  handleSensor();
 
   //Debug system resources
   if(!(millis() % 500)){
+
     debugFkt(
       "cycleCount: " + String(ESP.getCycleCount() - cycleCount) +
       " LoopTime: " + String((ESP.getCycleCount() - cycleCount) / 80000.0) + "ms" +
       " freeHeap: " + String(ESP.getFreeHeap() / 1000.0) + "kB"
-    , VERBOSE);
-    debugFkt(
-      "Temperature: " + String(dht.getTemperature()) +  "°C"
-      " Humidity: " + String(dht.getHumidity()) + "%"
     , VERBOSE);
   }
 }
