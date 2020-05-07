@@ -7,6 +7,7 @@
 class AnimationHandlerBus{
 public:
   void fade(CRGBWW value,double transitionTime);
+  CRGBWW getNewColor();
 private:
 
 };

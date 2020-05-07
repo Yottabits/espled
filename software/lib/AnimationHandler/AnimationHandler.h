@@ -22,11 +22,12 @@ class AnimationHandler{
     void rgb2hsv(CRGBWW &rgbContainer, unsigned int hsvContainer[]);
     void hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer);
 
+    //define getNewColor as pure virtual function
+    virtual CRGBWW getNewColor() = 0;
+
   protected:
     varSilo* silo;
     bool* varSiloChanged;
-    long lastChange = 0;
-    CRGBWW oldColor{0,0,0,0,0};
 
     MicHandler* micHandler;
 

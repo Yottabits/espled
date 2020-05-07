@@ -15,8 +15,8 @@ void AnimationHandlerPWM::handle(){
     unsigned int now = millis();
 
     if(*varSiloChanged){
-        lastChange = now;
-        oldColor = strip->getColor();
+        silo->lastChange = now;
+        silo->oldColor = strip->getColor();
         *varSiloChanged = false;
     }
 
@@ -27,26 +27,32 @@ void AnimationHandlerPWM::handle(){
         // Switch based on mode parameter in var Silo
         // Calculate new color (done by mode-functions)
         // And write them to strip
-        switch (silo->mode){
+        
+    //TODO move this function to annimation handler superclass
+    strip->showColor(getNewColor());
+    }
+}
+
+//TODO move this function to annimation handler superclass
+CRGBWW AnimationHandlerPWM::getNewColor(){
+    switch (silo->mode){
             case FADE_2_COLOR:
-                strip->showColor(fade2Color());
+                return fade2Color();
                 break;
             case BLINK_COLOR:
-                blinkColor();
+                return blinkColor();
                 break;
             case STROBE:
-                strip->showColor(strobe());
+                return strobe();
                 break;
             case SOUND_2_LIGHT:
-                strip->showColor(sound2Light());
+                return sound2Light();
                 break;
             case BREATHE:
-                strip->showColor(breathe());
+                return breathe();
                 break;
             default:
                 debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
                 break;
         }
-
-    }
 }

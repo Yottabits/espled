@@ -6,6 +6,7 @@ class AnimationHandlerPWM : AnimationHandler{
   public:
     AnimationHandlerPWM(StripControle* strip, varSilo* silo, bool* varSiloChanged, MicHandler* micHandler);
     void handle();
+    CRGBWW getNewColor();
 
   private:
     StripControle* strip;
