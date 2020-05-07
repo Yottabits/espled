@@ -20,30 +20,33 @@ void AnimationHandlerPWM::handle(){
         *varSiloChanged = false;
     }
 
+    //values for new frame need to get calculated
     if(now > fpsTimer + UPDATE_TIME){
-      fpsTimer = now;
+        fpsTimer = now;
 
-
-          switch (silo->mode){
-              case FADE_2_COLOR:
-                  strip->showColor(fade2Color());
-                  break;
-              case BLINK_COLOR:
-                  blinkColor();
-                  break;
-              case STROBE:
-                  strip->showColor(strobe());
-                  break;
-              case SOUND_2_LIGHT:
-                  strip->showColor(sound2Light());
-                  break;
-              case BREATHE:
-                  strip->showColor(breathe());
-                  break;
-              default:
-                  debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
-                  break;
-          }
+        // Switch based on mode parameter in var Silo
+        // Calculate new color (done by mode-functions)
+        // And write them to strip
+        switch (silo->mode){
+            case FADE_2_COLOR:
+                strip->showColor(fade2Color());
+                break;
+            case BLINK_COLOR:
+                blinkColor();
+                break;
+            case STROBE:
+                strip->showColor(strobe());
+                break;
+            case SOUND_2_LIGHT:
+                strip->showColor(sound2Light());
+                break;
+            case BREATHE:
+                strip->showColor(breathe());
+                break;
+            default:
+                debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
+                break;
+        }
 
     }
 }
