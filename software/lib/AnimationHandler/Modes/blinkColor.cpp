@@ -3,10 +3,10 @@
 enum state {FADE_TO_MAX, MAX_WAIT, FADE_TO_MIN, WAIT_MIN, FINAL_STATE};
 
 CRGBWW AnimationHandler::blinkColor(){
-    
-    debugFkt("Current mode"+(String)silo->mode+" old mode"+(String) silo->oldVarSilo->mode,DEBUG);
-    
-    
+
+    //debugFkt("Current mode"+(String)silo->mode+" old mode"+(String) silo->oldVarSilo->mode,DEBUG);
+
+
     static uint currentBlinkCycle = 0;
     static long stateTimer = 0;
     static state currentState = FADE_TO_MAX;
@@ -61,7 +61,7 @@ CRGBWW AnimationHandler::blinkColor(){
         long now = millis();
 
         bool fadeEndReached = now > (stateTimer + this->silo->time);
-        
+
 
         if(!fadeEndReached){
             float difR, difG, difB, difCW, difWW;
@@ -104,7 +104,7 @@ CRGBWW AnimationHandler::blinkColor(){
         varSilo *tempPointer;
         tempPointer = silo;
         silo = silo->oldVarSilo;
-        
+
         //TODO move this function to annimation handler superclass
         newColor = this->getNewColor();
 
