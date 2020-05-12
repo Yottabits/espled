@@ -6,7 +6,7 @@
 void debugFkt(String message, LogLevel LevelOfMessage){
   // Function which handles the debugging
   // Prints messages depending on log_level to MQTT and Serial
-  
+
   if(LOGLEVEL <= LevelOfMessage){
     //Add Level to message
     switch (LevelOfMessage)
@@ -34,7 +34,8 @@ void debugFkt(String message, LogLevel LevelOfMessage){
     static unsigned int lastMQTTPublished = 0;
     //if(millis() > lastMQTTPublished + 100F){
       lastMQTTPublished = millis();
-      client.publish(debugTopic, message.c_str());
+      if(client.connected())
+        client.publish(debugTopic, message.c_str());
       Serial.println(message);
     //}
 
