@@ -71,9 +71,9 @@ See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 |4|Sound2LIGHT|adjust brightness according to soundvalue|RGBWW-value, sensivitity |
 |5|Breathing|Strip turns brighter and darker periodically (some randomness) |RGBWW-value, frequency how often it should "breath"|
 |6|TempVis|Visualizes Temperatur Value of Temp Sensor - Cold(Blue)<>Normal(Green)<>Hot(Red)||
-|7||||
+|7|Industrial Turn on|Blinks in typical industrial style|RGBWW-value|
 |8||||
-|101|Lagerfeuer Animation|(gibt es online fertig)|centerposition|
+|101| Fire Animation|(exists online)|centerposition|
 |102|Noise||RGBWW,update Rate|
 |103|VU-Meter|| RGbWW, Sensitivity, update rate, centerposition|
 |104|StrobeParts|Small x-LED long "Parts" light up in strobe mode|RGBWW, Freq, centerposition, PartLength|

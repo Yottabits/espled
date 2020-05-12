@@ -20,7 +20,7 @@ class CRGBWW{
 
 //Variable Silo -> Datastructure that gets recived via MQTT and defines what the
 //Annimation Handlers/Modes do
-typedef struct{
+typedef struct varSilo{
   unsigned char mode;
   CRGBWW colorValue;
   unsigned int time;
@@ -32,6 +32,10 @@ typedef struct{
   unsigned int maxBrightnes;
   unsigned int timeVariance;
   unsigned int maxBrightnesVariance;
+  unsigned int duration;
+  varSilo* oldVarSilo;
+  CRGBWW oldColor;
+  unsigned long lastChange;
 } varSilo;
 
 //Supported LED Strip Types
@@ -40,6 +44,7 @@ enum stripType {RGB_STRIP = 3, RGBW_STRIP, RGBWW_STRIP, WS2812_STRIP, APA102_STR
 
 //LED Strip Modes
 enum Mode {FADE_2_COLOR, BLINK_COLOR, STROBE, SOUND_2_LIGHT, BREATHE, FIRE = 101, NOISE, VU_METER, STROBE_PARTS, MOVING_PARTS};
+
 
 //Log LEVELS
 enum LogLevel {VERBOSE, DEBUG, INFO, WARNING, ERROR};

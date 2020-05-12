@@ -5,25 +5,25 @@ CRGBWW AnimationHandler::fade2Color(){
 
   long now = millis();
 
-  bool fadeEndReached = now > (this->lastChange + this->silo->time);
+  bool fadeEndReached = now > (silo->lastChange + this->silo->time);
   CRGBWW newColor;
 
   if(!fadeEndReached){
     float difR, difG, difB, difCW, difWW;
-    difR = (int)(silo->colorValue.R - oldColor.R);
-    difG = (int)(silo->colorValue.G - oldColor.G);
-    difB = (int)(silo->colorValue.B - oldColor.B);
-    difCW = (int)(silo->colorValue.CW - oldColor.CW) ;
-    difWW = (int)(silo->colorValue.WW - oldColor.WW);
+    difR = (int)(silo->colorValue.R - silo->oldColor.R);
+    difG = (int)(silo->colorValue.G - silo->oldColor.G);
+    difB = (int)(silo->colorValue.B - silo->oldColor.B);
+    difCW = (int)(silo->colorValue.CW - silo->oldColor.CW) ;
+    difWW = (int)(silo->colorValue.WW - silo->oldColor.WW);
 
     //Calculate new Color Values
-    newColor.R = oldColor.R+(now-lastChange)*(difR/silo->time);
-    newColor.G = oldColor.G+(now-lastChange)*(difG/silo->time);
-    newColor.B = oldColor.B+(now-lastChange)*(difB/silo->time);
-    newColor.CW = oldColor.CW+(now-lastChange)*(difCW/silo->time);
-    newColor.WW = oldColor.WW+(now-lastChange)*(difWW/silo->time);
+    newColor.R = silo->oldColor.R+(now-silo->lastChange)*(difR/silo->time);
+    newColor.G = silo->oldColor.G+(now-silo->lastChange)*(difG/silo->time);
+    newColor.B = silo->oldColor.B+(now-silo->lastChange)*(difB/silo->time);
+    newColor.CW = silo->oldColor.CW+(now-silo->lastChange)*(difCW/silo->time);
+    newColor.WW = silo->oldColor.WW+(now-silo->lastChange)*(difWW/silo->time);
 
-    debugFkt("Fade2Color -> (now-lastChange):"+String(now-lastChange),VERBOSE);
+    debugFkt("Fade2Color -> (now-lastChange):"+String(now-silo->lastChange),VERBOSE);
     debugFkt("Fade2Color -> (difR/time):"+String(difR/silo->time),VERBOSE);
 
     //Debugg new ColorValue that gets send to StripControle

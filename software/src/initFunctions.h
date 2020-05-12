@@ -55,8 +55,10 @@ void saveConfigCallback () {
   shouldSaveConfig = true;
 }
 
-void initWifi()
-{
+void initWifi(){
+  // Initializes Wifi on esp8266 uses wifi-manager to spin up a http server + captive portal for the setup process
+  // Settings are saved of filesystem (json) and are recovered automatically once saved
+
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
@@ -79,6 +81,11 @@ void initWifi()
   //After the WiFi Manger is done, we are most probably connected
   debugFkt("local ip", INFO);
   debugFkt(WiFi.localIP().toString(), INFO);
+
+  //setup main Topic and debug topic path in mqtt
+  strcat(mainTopic, WiFi.macAddress().c_str());
+  strcat(debugTopic, mainTopic);
+  strcat(debugTopic, "/debug");
 
 
   strcpy(mqtt_server, custom_mqtt_server.getValue());
@@ -220,13 +227,19 @@ void initPins(){
 }
 
 void initStrip(){
+  // initializes strip and variable Silo
+  // depends on Strip-Settings made during wifi-setup process
+
   if(strcmp(strip_type, "RGB") == 0) type = stripType::RGB_STRIP;
   else if(strcmp(strip_type, "RGBW") == 0) type = stripType::RGBW_STRIP;
   else if(strcmp(strip_type, "RGBWW") == 0) type = stripType::RGBWW_STRIP;
   else if(strcmp(strip_type, "WS2812") == 0) type = stripType::WS2812_STRIP;
   else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102_STRIP;
 
+  // allokate Storage for varSilo and oldVarSilo
   Silo = new varSilo();
+  Silo->oldVarSilo = new varSilo();
+
   micHandler = new MicHandler(Silo);
 
   if(type < 6){
@@ -254,6 +267,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //DynamicJsonDocument doc(2048);
 
   deserializeJson(doc, payload, length);
+
+  // if we are currently in a temporary mode and the new mode in the mqtt message is
+  // also a temporary mode - dismiss message
+  if(Silo->oldVarSilo->mode == 1 && doc["mode"] == 1){
+    return;
+  }
+
+  //Store varSilo State to oldVarSilo (deep copy)
+  *(Silo->oldVarSilo) = *Silo;
+
   if(doc.containsKey("mode")) Silo->mode = doc["mode"];
   if(doc.containsKey("color")){
     Silo->colorValue.R = doc["color"][0];
@@ -271,6 +294,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if(doc.containsKey("maxBrightnes")) Silo->maxBrightnes = doc["maxBrightnes"];
   if(doc.containsKey("timeVariance")) Silo->timeVariance = doc["timeVariance"];
   if(doc.containsKey("maxBrightnesVariance")) Silo->maxBrightnesVariance = doc["maxBrightnesVariance"];
+  if(doc.containsKey("duration")) Silo->duration = doc["duration"];
 
 
   debugFkt("Message arrived, Length: " + String(length), INFO);
@@ -338,11 +362,6 @@ void initMQTT() {
 
     //react to outcome of connect try
     if (connected) {
-      //setup main Topic and debug topic path in mqtt
-      strcat(mainTopic, WiFi.macAddress().c_str());
-      strcat(debugTopic, mainTopic);
-      strcat(debugTopic, "/debug");
-
 
       debugFkt("Now Connected - Main Topic of this device: ", INFO);
       debugFkt(mainTopic, INFO);
@@ -355,7 +374,7 @@ void initMQTT() {
 
       //Publish Info that Board Connected
       //client.publish("/ESPLED/",WiFi.macAddress().c_str());
-      String HelloMessage = "espled-board "+ WiFi.macAddress() + " connected";
+      String HelloMessage = "espled-  board "+ WiFi.macAddress() + " connected";
       client.publish("/ESPLED/", HelloMessage.c_str());
 
       //Publish Info that Board Connected in /ESPLED/Topic

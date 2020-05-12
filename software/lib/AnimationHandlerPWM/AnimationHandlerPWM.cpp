@@ -15,35 +15,44 @@ void AnimationHandlerPWM::handle(){
     unsigned int now = millis();
 
     if(*varSiloChanged){
-        lastChange = now;
-        oldColor = strip->getColor();
+        silo->lastChange = now;
+        silo->oldColor = strip->getColor();
         *varSiloChanged = false;
     }
 
+    //values for new frame need to get calculated
     if(now > fpsTimer + UPDATE_TIME){
-      fpsTimer = now;
+        fpsTimer = now;
 
-
-          switch (silo->mode){
-              case FADE_2_COLOR:
-                  strip->showColor(fade2Color());
-                  break;
-              case BLINK_COLOR:
-                  blinkColor();
-                  break;
-              case STROBE:
-                  strip->showColor(strobe());
-                  break;
-              case SOUND_2_LIGHT:
-                  strip->showColor(sound2Light());
-                  break;
-              case BREATHE:
-                  strip->showColor(breathe());
-                  break;
-              default:
-                  debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
-                  break;
-          }
-
+        // Switch based on mode parameter in var Silo
+        // Calculate new color (done by mode-functions)
+        // And write them to strip
+        
+    //TODO move this function to annimation handler superclass
+    strip->showColor(getNewColor());
     }
+}
+
+//TODO move this function to annimation handler superclass
+CRGBWW AnimationHandlerPWM::getNewColor(){
+    switch (silo->mode){
+            case FADE_2_COLOR:
+                return fade2Color();
+                break;
+            case BLINK_COLOR:
+                return blinkColor();
+                break;
+            case STROBE:
+                return strobe();
+                break;
+            case SOUND_2_LIGHT:
+                return sound2Light();
+                break;
+            case BREATHE:
+                return breathe();
+                break;
+            default:
+                debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
+                break;
+        }
 }
