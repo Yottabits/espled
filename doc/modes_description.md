@@ -38,8 +38,9 @@ This mode should be used for notifictaion. The Controller will store it's curren
 |-----------|--------|------|------|------|
 | mode      | changes Mode |  int    |  1    |  1    |
 | color     | defines color in an Red-Green-Blue-WarmWhite-ColdWhite array   | PWM  | 0    | 1023 |
-| time      | duration of one blink | milliseconds | 0 | 4294967295 ~ 49.7d   |
-| legth      | number of blinks | int | 0 | ?   |
+| duration   | duration of each max and min period | milliseconds | 0 | 4294967295 ~ 49.7d   |
+| length      | number of blinks | int | 0 | ?   |
+| time       | fadeTime from 0 to 1023| 0 | 4294967295 ~ 49.7d |
 
 ### Example JSON:
 ``` JSON
@@ -47,13 +48,14 @@ This mode should be used for notifictaion. The Controller will store it's curren
   "mode":1,
   "color":[
       1023,
-      1023,
-      1023,
-      1023,
-      1023
+      0,
+      0,
+      0,
+      0
   ],
-  "time":1000,
-  "legth":3 
+  "time":2000,
+  "legth":3,
+  "duration":1000
 }
 ```
 
@@ -71,19 +73,15 @@ This mode lights up the strip in the selected color and blinks it on/off in the 
 ### Example JSON:
 ``` JSON
 {
-  "mode":4,
+  "mode":2,
   "color":[
+      800,
+      120,
       1023,
-      0,
-      0,
       0,
       0
   ],
-  "time":6000,
-  "minBrightnes":0,
-  "maxBrightnes":1023,
-  "timeVariance":3000,
-  "maxBrightnesVariance":500
+  "frequency":20
 }
 ```
 

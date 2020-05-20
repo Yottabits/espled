@@ -11,6 +11,7 @@ CRGBWW AnimationHandler::blinkColor(){
     static long stateTimer = 0;
     static state currentState = FADE_TO_MAX;
     CRGBWW newColor;
+    float multiplier;
 
     // handle reset of static vars through varSiloChanged
     if(millis() < silo->lastChange + UPDATE_TIME){
@@ -41,12 +42,17 @@ CRGBWW AnimationHandler::blinkColor(){
             newColor.B = silo->oldColor.B+(now-stateTimer)*(difB/silo->time);
             newColor.CW = silo->oldColor.CW+(now-stateTimer)*(difCW/silo->time);
             newColor.WW = silo->oldColor.WW+(now-stateTimer)*(difWW/silo->time);
+
+            debugFkt("currentState: " + (String)currentState + ", cycle: " + (String)currentBlinkCycle + ", difR: " + (String)difR + ", newColor: " + (String)newColor.R + "|"+ (String)newColor.G + "|"+ (String)newColor.B + "|",DEBUG);
         }else{
             //end reached
             newColor = silo->colorValue;
             currentState = MAX_WAIT;
             stateTimer = millis();
+
+            silo->oldColor = CRGBWW{0,0,0,0,0};
         }
+        
         break;
     }
     case MAX_WAIT:{
@@ -65,11 +71,11 @@ CRGBWW AnimationHandler::blinkColor(){
 
         if(!fadeEndReached){
             float difR, difG, difB, difCW, difWW;
-            difR = -silo->colorValue.R;
-            difG = -silo->colorValue.G;
-            difB = -silo->colorValue.B;
-            difCW = -silo->colorValue.CW;
-            difWW = -silo->colorValue.WW;
+            difR = -(int)silo->colorValue.R;
+            difG = -(int)silo->colorValue.G;
+            difB = -(int)silo->colorValue.B;
+            difCW = -(int)silo->colorValue.CW;
+            difWW = -(int)silo->colorValue.WW;
 
             //Calculate new Color Values
             newColor.R = silo->colorValue.R+(now-stateTimer)*(difR/silo->time);
@@ -89,17 +95,18 @@ CRGBWW AnimationHandler::blinkColor(){
         newColor = {0,0,0,0,0};
         if(millis() > stateTimer + silo->duration){
             stateTimer = millis();
+            currentBlinkCycle++;
             if(currentBlinkCycle >= silo->length){
                 currentState = FINAL_STATE;
             }else{
                 currentState = FADE_TO_MAX;
-                currentBlinkCycle++;
+                
             }
         }
         break;
     }
     case FINAL_STATE:{
-        float multiplier = (millis()-stateTimer)/silo->time;
+        multiplier = float(millis()-stateTimer)/(float)silo->time;
 
         //THE SILOSWAPP XO
         varSilo *tempPointer;
@@ -110,6 +117,7 @@ CRGBWW AnimationHandler::blinkColor(){
         newColor = this->getNewColor();
 
         silo = tempPointer;
+
 
         newColor.R *= multiplier;
         newColor.G *= multiplier;
@@ -127,7 +135,7 @@ CRGBWW AnimationHandler::blinkColor(){
         break;
     }
     }
-    debugFkt("currentState: " + (String)currentState + ", cycle: " + (String)currentBlinkCycle + ", newColor: " + (String)newColor.R + "|"+ (String)newColor.G + "|"+ (String)newColor.B + "|",DEBUG);
+    //debugFkt("currentState: " + (String)currentState + ", cycle: " + (String)currentBlinkCycle + ", multiplier: " + (String)multiplier + ", newColor: " + (String)newColor.R + "|"+ (String)newColor.G + "|"+ (String)newColor.B + "|",DEBUG);
     return newColor;
 
 }
