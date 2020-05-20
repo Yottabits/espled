@@ -80,6 +80,11 @@ void initWifi(){
   debugFkt("local ip", INFO);
   debugFkt(WiFi.localIP().toString(), INFO);
 
+  //setup main Topic and debug topic path in mqtt
+  strcat(mainTopic, WiFi.macAddress().c_str());
+  strcat(debugTopic, mainTopic);
+  strcat(debugTopic, "/debug");
+
 
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
@@ -221,7 +226,7 @@ void initPins(){
 
 void initStrip(){
   // initializes strip and variable Silo
-  // depends on Strip-Settings made during wifi-setup process 
+  // depends on Strip-Settings made during wifi-setup process
 
   if(strcmp(strip_type, "RGB") == 0) type = stripType::RGB_STRIP;
   else if(strcmp(strip_type, "RGBW") == 0) type = stripType::RGBW_STRIP;
@@ -261,7 +266,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   deserializeJson(doc, payload, length);
 
-  // if we are currently in a temporary mode and the new mode in the mqtt message is 
+  // if we are currently in a temporary mode and the new mode in the mqtt message is
   // also a temporary mode - dismiss message
   if(Silo->oldVarSilo->mode == 1 && doc["mode"] == 1){
     return;
@@ -269,7 +274,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   //Store varSilo State to oldVarSilo (deep copy)
   *(Silo->oldVarSilo) = *Silo;
-    
+
   if(doc.containsKey("mode")) Silo->mode = doc["mode"];
   if(doc.containsKey("color")){
     Silo->colorValue.R = doc["color"][0];
@@ -355,11 +360,6 @@ void initMQTT() {
 
     //react to outcome of connect try
     if (connected) {
-      //setup main Topic and debug topic path in mqtt
-      strcat(mainTopic, WiFi.macAddress().c_str());
-      strcat(debugTopic, mainTopic);
-      strcat(debugTopic, "/debug");
-
 
       debugFkt("Now Connected - Main Topic of this device: ", INFO);
       debugFkt(mainTopic, INFO);
@@ -372,7 +372,7 @@ void initMQTT() {
 
       //Publish Info that Board Connected
       //client.publish("/ESPLED/",WiFi.macAddress().c_str());
-      String HelloMessage = "espled-board "+ WiFi.macAddress() + " connected";
+      String HelloMessage = "espled-  board "+ WiFi.macAddress() + " connected";
       client.publish("/ESPLED/", HelloMessage.c_str());
 
       //Publish Info that Board Connected in /ESPLED/Topic
