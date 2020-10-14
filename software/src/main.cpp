@@ -97,7 +97,7 @@ void handleReconnect(){
 void handleSensor(){
   if(!(millis() % 10000)){
     debugFkt("Transmit temperature at " + (String(mainTopic) + String("/temperature")), VERBOSE);
-    client.publish((String(mainTopic) + String("/temperature")).c_str(), String(dht.getTemperature()).c_str());
+    client.publish((String(mainTopic) + String("/temperature")).c_str(), String((dht.getTemperature())-3.0).c_str());
     client.publish((String(mainTopic) + String("/humidity")).c_str(), String(dht.getHumidity()).c_str());
 }
 }
