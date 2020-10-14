@@ -343,7 +343,7 @@ void initMQTT() {
 
 
     // Create a client ID
-    String clientId = "RGB-Controller";
+    String clientId = "RGB-Controller-" + WiFi.macAddress();
 
     client.setServer(mqtt_server, atoi(mqtt_port));
     client.setCallback(callback);
