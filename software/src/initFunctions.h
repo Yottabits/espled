@@ -34,6 +34,9 @@ bool shouldSaveConfig = false;
 
 WiFiManager wifiManager;
 
+// Create a client ID for Wifi Name and MQTT identifier
+String clientId = "RGB-Controller-" + WiFi.macAddress();
+
 WiFiClient espClient;
 WiFiClientSecure espClientSecure;
 
@@ -73,7 +76,7 @@ void initWifi(){
   wifiManager.addParameter(&custom_mqtt_username);
   wifiManager.addParameter(&custom_mqtt_password);
 
-  wifiManager.autoConnect("RGB Controller Setup");
+  wifiManager.autoConnect(clientId.c_str());
   wifiManager.setConfigPortalTimeout(180);
 
   //After the WiFi Manger is done, we are most probably connected
@@ -342,8 +345,6 @@ void initMQTT() {
     debugFkt(mqtt_password, INFO);
 
 
-    // Create a client ID
-    String clientId = "RGB-Controller-" + WiFi.macAddress();
 
     client.setServer(mqtt_server, atoi(mqtt_port));
     client.setCallback(callback);
@@ -372,13 +373,8 @@ void initMQTT() {
 
       //Publish Info that Board Connected
       //client.publish("/ESPLED/",WiFi.macAddress().c_str());
-      String HelloMessage = "espled-  board "+ WiFi.macAddress() + " connected";
+      String HelloMessage = "espled-board "+ WiFi.macAddress() + " connected";
       client.publish("/ESPLED/", HelloMessage.c_str());
-
-      //Publish Info that Board Connected in /ESPLED/Topic
-      client.publish(mainTopic, strcat((char *) "espled-board connected -> ", WiFi.macAddress().c_str()));
-
-
     }
     else
     {
