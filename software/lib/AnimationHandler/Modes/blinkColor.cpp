@@ -23,7 +23,6 @@ CRGBWW AnimationHandler::blinkColor(){
         //Validation of input vars
         if(silo->time == 0) silo->time = 1000;
         if(silo->duration == 0) silo->duration = 1000;
-        //if(silo->length  == 0) silo->length = 1;
     }
 
 
