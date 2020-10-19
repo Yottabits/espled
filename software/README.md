@@ -10,9 +10,10 @@ Although the ESPLED board is fully customizable, the default software should sat
 The configuration mode allows you to select your local WiFi network and the type of led strip you want to use.
 
 To enter the configuration mode, perform the following tasks:
-- Press the __reset__ button
-- Press and hold the __mode__ button after within 1 second after releasing the reset button
-- Release the __mode__ button within 2 seconds
+- Press and release the __reset__ button
+- Press and hold the __mode__ button, the ESP Module should turn on its blue led permanently
+- Hold the __mode__ button down until the led strip blinks blue once
+- then the board is reset and should open up it's own wifi again
 
 After sucessfully entering the configuration mode, use your smartphone or computer to connect to the wireless network called "ESPLED config" and follow the screen.
 
