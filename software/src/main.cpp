@@ -44,6 +44,7 @@ void debugFkt(String message, LogLevel LevelOfMessage){
 
 
 void firmmareReset(){
+  delay(2000);
   if(digitalRead(pinM) == LOW){
     wifiManager.resetSettings();
     SPIFFS.format();

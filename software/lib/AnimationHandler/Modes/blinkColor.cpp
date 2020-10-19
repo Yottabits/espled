@@ -11,6 +11,7 @@ CRGBWW AnimationHandler::blinkColor(){
     static long stateTimer = 0;
     static state currentState = FADE_TO_MAX;
     CRGBWW newColor;
+    float multiplier;
 
     // handle reset of static vars through varSiloChanged
     if(millis() < silo->lastChange + UPDATE_TIME){
@@ -18,6 +19,10 @@ CRGBWW AnimationHandler::blinkColor(){
         currentBlinkCycle = 0;
         stateTimer = millis();
         currentState = FADE_TO_MAX;
+
+        //Validation of input vars
+        if(silo->time == 0) silo->time = 1000;
+        if(silo->duration == 0) silo->duration = 1000;
     }
 
 
@@ -29,10 +34,11 @@ CRGBWW AnimationHandler::blinkColor(){
 
         if(!fadeEndReached){
             float difR, difG, difB, difCW, difWW;
+            //Underflow of uint -> casting to signed int neccessary for negative dif
             difR = (int)(silo->colorValue.R - silo->oldColor.R);
             difG = (int)(silo->colorValue.G - silo->oldColor.G);
             difB = (int)(silo->colorValue.B - silo->oldColor.B);
-            difCW = (int)(silo->colorValue.CW - silo->oldColor.CW) ;
+            difCW = (int)(silo->colorValue.CW - silo->oldColor.CW);
             difWW = (int)(silo->colorValue.WW - silo->oldColor.WW);
 
             //Calculate new Color Values
@@ -41,16 +47,21 @@ CRGBWW AnimationHandler::blinkColor(){
             newColor.B = silo->oldColor.B+(now-stateTimer)*(difB/silo->time);
             newColor.CW = silo->oldColor.CW+(now-stateTimer)*(difCW/silo->time);
             newColor.WW = silo->oldColor.WW+(now-stateTimer)*(difWW/silo->time);
+
+            //debugFkt("currentState: " + (String)currentState + ", cycle: " + (String)currentBlinkCycle + ", difR: " + (String)difR + ", difG: " + (String)difG + ", difB: " + (String)difB + ", newColor: " + (String)newColor.R + "|"+ (String)newColor.G + "|"+ (String)newColor.B + "|",DEBUG);
         }else{
             //end reached
             newColor = silo->colorValue;
             currentState = MAX_WAIT;
             stateTimer = millis();
+
+            silo->oldColor = CRGBWW{0,0,0,0,0};
         }
+
         break;
     }
     case MAX_WAIT:{
-    newColor = silo->colorValue;
+        newColor = silo->colorValue;
         if(millis() > stateTimer + silo->duration){
             currentState = FADE_TO_MIN;
             stateTimer = millis();
@@ -62,14 +73,21 @@ CRGBWW AnimationHandler::blinkColor(){
 
         bool fadeEndReached = now > (stateTimer + this->silo->time);
 
+        //Do not fade to zero when blinking once
+        if(silo->length <= 1) {
+          currentState = FINAL_STATE;
+          stateTimer = millis();
+          newColor = silo->colorValue;
+          break;
+        }
 
         if(!fadeEndReached){
             float difR, difG, difB, difCW, difWW;
-            difR = -silo->colorValue.R;
-            difG = -silo->colorValue.G;
-            difB = -silo->colorValue.B;
-            difCW = -silo->colorValue.CW;
-            difWW = -silo->colorValue.WW;
+            difR = -1.0 * silo->colorValue.R;
+            difG = -1.0 * silo->colorValue.G;
+            difB = -1.0 * silo->colorValue.B;
+            difCW = -1.0 * silo->colorValue.CW;
+            difWW = -1.0 * silo->colorValue.WW;
 
             //Calculate new Color Values
             newColor.R = silo->colorValue.R+(now-stateTimer)*(difR/silo->time);
@@ -89,17 +107,18 @@ CRGBWW AnimationHandler::blinkColor(){
         newColor = {0,0,0,0,0};
         if(millis() > stateTimer + silo->duration){
             stateTimer = millis();
+            currentBlinkCycle++;
             if(currentBlinkCycle >= silo->length){
                 currentState = FINAL_STATE;
             }else{
                 currentState = FADE_TO_MAX;
-                currentBlinkCycle++;
+
             }
         }
         break;
     }
     case FINAL_STATE:{
-        float multiplier = (millis()-stateTimer)/silo->time;
+        multiplier = float(millis()-stateTimer)/(float)silo->time;
 
         //THE SILOSWAPP XO
         varSilo *tempPointer;
@@ -107,15 +126,38 @@ CRGBWW AnimationHandler::blinkColor(){
         silo = silo->oldVarSilo;
 
         //TODO move this function to annimation handler superclass
-        newColor = this->getNewColor();
+        CRGBWW returnColor = this->getNewColor();
 
         silo = tempPointer;
 
-        newColor.R *= multiplier;
-        newColor.G *= multiplier;
-        newColor.B *= multiplier;
-        newColor.CW *= multiplier;
-        newColor.WW *= multiplier;
+
+        long now = millis();
+
+        if(silo->length <= 1){
+            float difR, difG, difB, difCW, difWW;
+            //Underflow of uint -> casting to signed int neccessary for negative dif
+            difR = (int)(returnColor.R - silo->colorValue.R);
+            difG = (int)(returnColor.G - silo->colorValue.G);
+            difB = (int)(returnColor.B - silo->colorValue.B);
+            difCW = (int)(returnColor.CW - silo->colorValue.CW);
+            difWW = (int)(returnColor.WW - silo->colorValue.WW);
+
+            //Calculate new Color Values
+            newColor.R = silo->colorValue.R+(int)(now-stateTimer)*(difR/silo->time);
+            newColor.G = silo->colorValue.G+(int)(now-stateTimer)*(difG/silo->time);
+            newColor.B = silo->colorValue.B+(int)(now-stateTimer)*(difB/silo->time);
+            newColor.CW = silo->colorValue.CW+(int)(now-stateTimer)*(difCW/silo->time);
+            newColor.WW = silo->colorValue.WW+(int)(now-stateTimer)*(difWW/silo->time);
+          }
+          else{
+            newColor.R = returnColor.R * multiplier;
+            newColor.G = returnColor.G * multiplier;
+            newColor.B = returnColor.B * multiplier;
+            newColor.CW = returnColor.CW * multiplier;
+            newColor.WW = returnColor.WW * multiplier;
+          }
+
+
 
         if(millis() > stateTimer + silo->time){
             // make a deep copy
