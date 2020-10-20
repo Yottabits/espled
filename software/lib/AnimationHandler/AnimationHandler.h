@@ -18,6 +18,7 @@ class AnimationHandler{
     CRGBWW sound2Light();
     CRGBWW strobe();
     CRGBWW breathe();
+    CRGBWW industrialFlicker();
 
     void rgb2hsv(CRGBWW &rgbContainer, unsigned int hsvContainer[]);
     void hsv2rgb(unsigned int hsvContainer[], CRGBWW &rgbContainer);

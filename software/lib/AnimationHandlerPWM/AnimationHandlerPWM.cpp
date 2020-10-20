@@ -51,6 +51,9 @@ CRGBWW AnimationHandlerPWM::getNewColor(){
             case BREATHE:
                 return breathe();
                 break;
+            case INDUSTRIAL_FLICKER:
+                return industrialFlicker();
+                break;
             default:
                 debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips",ERROR);
                 break;
