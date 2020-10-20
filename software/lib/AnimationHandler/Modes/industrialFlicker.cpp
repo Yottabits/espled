@@ -1,53 +1,49 @@
 #include <AnimationHandler.h>
+#include <FastLED.h>
 
-enum state {FLASH, OLD_COLOR, FADE_ON, FADE_OFF, DARK, PERMANENT_ON, FLICKER_ON};
+enum state {FLASH, OLD_COLOR, PERMANENT_ON, FLICKER_ON};
 
 CRGBWW AnimationHandler::industrialFlicker(){
 
-    //debugFkt("Current mode"+(String)silo->mode+" old mode"+(String) silo->oldVarSilo->mode,DEBUG);
-
-    static long stateTimer = 0;
     static state currentState;
     CRGBWW newColor;
     
-    // handle reset of static vars through varSiloChanged
+  
+   // handle reset of static vars through varSiloChanged
     if(millis() < silo->lastChange + UPDATE_TIME){
         //Reset static vars
-        stateTimer = millis();
-
-        //add randomness or control
         currentState = FLASH;
 
         //Validation of input vars
-        if(silo->time == 0) silo->time = 1000;
-        if(silo->duration == 0) silo->duration = 1000;
+        if(silo->duration == 0 || silo->duration > UINT16_MAX) silo->duration = UINT16_MAX*(2/3);
     }
-
 
     switch (currentState){
     case FLASH:{
         newColor = silo->colorValue;
-        currentState = OLD_COLOR;
+        uint16 rand = random16(0,1000);
+        if(rand < 90){
+            currentState = FLASH;
+        }else{
+            currentState = OLD_COLOR;
+        }
+        
         break;
     }
     case OLD_COLOR:{
-        //end reached
         newColor = silo->oldColor;
-        
-        currentState = PERMANENT_ON;
+        uint16 rand = random16(0,1000);
+        if(rand > 50){
+            currentState = OLD_COLOR;
+        }else{
+            rand = random16(0,UINT16_MAX);
+            if (rand < silo->duration){
+                currentState = FLASH;
+            }else{
+                currentState = PERMANENT_ON;
+            }
+        }        
         break;  
-    }
-    case FADE_ON:{
-        break;
-    }
-    case FADE_OFF:{
-        break;
-    }
-    case DARK:{
-        newColor = CRGBWW{0,0,0,0,0};
-        currentState = FLASH;
-        stateTimer = millis();
-        break;
     }
     case PERMANENT_ON:{
         //end reached
@@ -65,7 +61,12 @@ CRGBWW AnimationHandler::industrialFlicker(){
     }
     }
 
-    debugFkt("currentState: " + (String)currentState +" R:"+ (String)newColor.R ,DEBUG);
+    debugFkt("currentState: " + (String)currentState +
+                        " R:"+ (String)newColor.R +
+                        " G:"+ (String)newColor.G +
+                        " B:"+ (String)newColor.B +
+                        " CW:"+ (String)newColor.CW +
+                        " WW:"+ (String)newColor.WW  ,DEBUG);
     return newColor;
 
 }
