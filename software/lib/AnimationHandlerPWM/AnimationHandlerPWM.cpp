@@ -61,6 +61,7 @@ CRGBWW AnimationHandlerPWM::getNewColor()
         break;
     default:
         debugFkt("The Selected Mode is not possible with RGB/RGBW/RGBWW Strips", ERROR);
+        return CRGBWW{0,0,0,0,0};
         break;
     }
 }
