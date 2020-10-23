@@ -1,7 +1,7 @@
 #include <AnimationHandler.h>
 #include <FastLED.h>
 
-enum state {FLASH, OLD_COLOR, PERMANENT_ON, FLICKER_ON};
+enum state {FLASH, OLD_COLOR, PERMANENT_ON};
 
 CRGBWW AnimationHandler::industrialFlicker(){
 
@@ -48,12 +48,7 @@ CRGBWW AnimationHandler::industrialFlicker(){
     case PERMANENT_ON:{
         //end reached
         newColor = silo->colorValue;
-        silo->oldColor = newColor;
         currentState = PERMANENT_ON;
-        break;
-    }
-    case FLICKER_ON:{
-        newColor = {0,0,0,0,0};
         break;
     }
     default:{
