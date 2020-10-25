@@ -21,11 +21,11 @@ void AnimationHandlerBus::noise()
 
         CRGB Color = CRGBWW2FastLedCRGB(silo->colorValue);
 
-        for (int i = 0; i <= this->stripLength; i++)
+        for (unsigned int i = 0; i <= this->stripLength; i++)
         {
             if(random16(0,1000)>500){
                 //set Led to Color
-                this->leds[i].setRGB(Color);
+                this->leds[i] = Color;
             }else{
                 //turn led off
                 this->leds[i].setRGB(0,0,0);

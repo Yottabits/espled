@@ -7,7 +7,11 @@
 class AnimationHandlerBus : AnimationHandler
 {
 public:
-  AnimationHandlerBus(int stripLength, varSilo *silo, bool *varSiloChanged, MicHandler *micHandler);
+  AnimationHandlerBus(unsigned int stripLength, 
+                      varSilo *silo,  
+                      bool *varSiloChanged, 
+                      MicHandler *micHandler);
+
   ~AnimationHandlerBus();
 
   void handle();
@@ -22,8 +26,9 @@ public:
   void wipe();
   void fire();
   void vuMeter();
+  void noise();
 
 private:
   CRGB *leds; //buffer on Heap for Adressable Strips
-  int stripLength;
+  unsigned int stripLength;
 };

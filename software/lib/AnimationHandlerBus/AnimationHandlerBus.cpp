@@ -3,7 +3,7 @@
 
 extern void debugFkt(String, LogLevel);
 
-AnimationHandlerBus::AnimationHandlerBus(int stripLength, varSilo *silo, bool *varSiloChanged, MicHandler *micHandler)
+AnimationHandlerBus::AnimationHandlerBus(unsigned int stripLength, varSilo *silo, bool *varSiloChanged, MicHandler *micHandler)
     : AnimationHandler{silo, varSiloChanged, micHandler}
 {
 
@@ -11,7 +11,7 @@ AnimationHandlerBus::AnimationHandlerBus(int stripLength, varSilo *silo, bool *v
     this->leds = (CRGB *)malloc(sizeof(CRGB) * stripLength);
 
     //set this Buffer to zero
-    memset(this->leds, 0, stripLength*sizeof(CRGB)); 
+    memset(this->leds, 0, stripLength * sizeof(CRGB));
 
     this->stripLength = stripLength;
 
@@ -31,27 +31,28 @@ void AnimationHandlerBus::handle()
     debugFkt("Bus Handler called", INFO);
     if (silo->mode < 100)
     {
-        //We are in a single color mode 
+        //We are in a single color mode
 
-        //Fill Complete Strip with color_Value calculated by getNewColor Function as 
+        //Fill Complete Strip with color_Value calculated by getNewColor Function as
         //with not individually adressable Strips
-        fill_solid(this->leds,this->stripLength,CRGBWW2FastLedCRGB(this->getNewColor()));
-    }else
+        fill_solid(this->leds, this->stripLength, CRGBWW2FastLedCRGB(this->getNewColor()));
+    }
+    else
     {
         //Wa are in a mode for individually adressable strips
         this->getNewStripBuffer();
     }
 
     //Write Current this->leds Buffer to Strip
-    FastLED.show(); 
-    
+    FastLED.show();
 }
 
-CRGB AnimationHandlerBus::CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject){
+CRGB AnimationHandlerBus::CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject)
+{
     CRGB CRGBColorObject;
-    CRGBColorObject.r = CRGBWWColorObject.R/4;
-    CRGBColorObject.g = CRGBWWColorObject.G/4;
-    CRGBColorObject.b = CRGBWWColorObject.B/4;
+    CRGBColorObject.r = CRGBWWColorObject.R / 4;
+    CRGBColorObject.g = CRGBWWColorObject.G / 4;
+    CRGBColorObject.b = CRGBWWColorObject.B / 4;
     //Todo include CW WW values
 
     return CRGBColorObject;
@@ -89,12 +90,12 @@ CRGBWW AnimationHandlerBus::getNewColor()
 void AnimationHandlerBus::getNewStripBuffer()
 {
     switch (silo->mode)
-        {
-        case WIPE:
-            //fill_solid()
-            break;
-        
-        default:
-            break;
-        }
+    {
+    case WIPE:
+        //fill_solid()
+        break;
+
+    default:
+        break;
+    }
 }
