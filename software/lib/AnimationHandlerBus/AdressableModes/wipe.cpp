@@ -34,7 +34,8 @@ if (!wipeEndReached)
     {       
         bool changeNextLed = lastBufferChange + now > timePerLed;
         if(changeNextLed){
-            this->leds[nextLed].setRGB(silo->colorValue.R,silo->colorValue.G,silo->colorValue.B);
+            //Todo do this with conversion function
+            this->leds[nextLed].setRGB(silo->colorValue.R/4,silo->colorValue.G/4,silo->colorValue.B/4);
             lastBufferChange = millis();
             nextLed++;
         }
