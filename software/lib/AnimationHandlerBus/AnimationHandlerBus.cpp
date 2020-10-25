@@ -52,6 +52,8 @@ CRGB AnimationHandlerBus::CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject){
     CRGBColorObject.r = CRGBWWColorObject.R/4;
     CRGBColorObject.g = CRGBWWColorObject.G/4;
     CRGBColorObject.b = CRGBWWColorObject.B/4;
+    //Todo include CW WW values
+
     return CRGBColorObject;
 }
 
