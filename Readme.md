@@ -73,6 +73,7 @@ See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 |6|TempVis|Visualizes Temperatur Value of Temp Sensor - Cold(Blue)<>Normal(Green)<>Hot(Red)||
 |7|Industrial Turn on|Blinks in typical industrial style|RGBWW-value|
 |8||||
+|100|Wipe -> Switches to new Color by switching LEDs one by one, start to end|Duration of change|
 |101| Fire Animation|(exists online)|centerposition|
 |102|Noise||RGBWW,update Rate|
 |103|VU-Meter|| RGbWW, Sensitivity, update rate, centerposition|
