@@ -2,12 +2,33 @@
 #include <PinDefinitions.h>
 
 #include <AnimationHandler.h>
+#include <FastLED.h>
 
-
-class AnimationHandlerBus{
+class AnimationHandlerBus : AnimationHandler
+{
 public:
-  void fade(CRGBWW value,double transitionTime);
-  CRGBWW getNewColor();
-private:
+  AnimationHandlerBus(unsigned int stripLength, 
+                      varSilo *silo,  
+                      bool *varSiloChanged, 
+                      MicHandler *micHandler);
 
+  ~AnimationHandlerBus();
+
+  void handle();
+
+  CRGBWW getNewColor();
+  void getNewStripBuffer();
+  
+  //Helpers
+  CRGB CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject);
+
+  //Aderssable Modes
+  void wipe();
+  void fire();
+  void vuMeter();
+  void noise();
+
+private:
+  CRGB *leds; //buffer on Heap for Adressable Strips
+  unsigned int stripLength;
 };

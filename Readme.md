@@ -61,27 +61,8 @@ Software:
 ## Which parts do I need?
 See the Bill-Of-Materials file named ESPLED.csv in the hardware folder.
 
-## Suggested MODES
-
-| Modenumber   |        Name      | Description | used-Arguments-from-Var-Silo|
-|--------------|------------------|-------------|-----------------------------|
-|1|  Fade to color   |  Also used for jumps -> time = 0           | RGBWW-value, Transitiontime |
-|2|  Blink color     |  Stores current State, Fades to color and back - Maybe posibility of selectiong number of blinks | RGBWW-value, Transition time, OnTime, NumOfBlinks |
-|3|Strobe|Strobe selectable color and Freq|RGBWW-value, Freq |
-|4|Sound2LIGHT|adjust brightness according to soundvalue|RGBWW-value, sensivitity |
-|5|Breathing|Strip turns brighter and darker periodically (some randomness) |RGBWW-value, frequency how often it should "breath"|
-|6|TempVis|Visualizes Temperatur Value of Temp Sensor - Cold(Blue)<>Normal(Green)<>Hot(Red)||
-|7|Industrial Turn on|Blinks in typical industrial style|RGBWW-value|
-|8||||
-|100|Wipe -> Switches to new Color by switching LEDs one by one, start to end|Duration of change|
-|101| Fire Animation|(exists online)|centerposition|
-|102|Noise||RGBWW,update Rate|
-|103|VU-Meter|| RGbWW, Sensitivity, update rate, centerposition|
-|104|StrobeParts|Small x-LED long "Parts" light up in strobe mode|RGBWW, Freq, centerposition, PartLength|
-|105|Moving Parts|Small x-LED long "Parts" travel from centerpos(=Startpos) - to the end(s) of the strip|RGBWW-value, update rate, centerposition, |
-|106|American Police Light|red/blue left/right (half of adress room) flash|update rate|
-|107|Rainbow|fills strip with rainbow maybe moves it||
-
+## Supported Modes
+See Wiki (https://github.com/Yottabits/espled/wiki/Modes-Description)
 
 ## nice Projects with led animations for insperation
 * GoodListOfAnimations for individually addressable strips: https://www.tweaking4all.com/hardware/arduino/arduino-all-ledstrip-effects-in-one/

@@ -63,6 +63,7 @@ void initWifi(){
   WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
   WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 6);
   WiFiManagerParameter custom_strip_type("strip_type", "strip type", strip_type, 8);
+  WiFiManagerParameter custom_strip_length("strip_length", "-1", strip_length, 5);
   WiFiManagerParameter custom_mqtt_ssl("ssl", "no", mqtt_ssl, 3);
   WiFiManagerParameter custom_mqtt_username("mqtt_username", "username", mqtt_username, 40);
   WiFiManagerParameter custom_mqtt_password("mqtt_password", "password", mqtt_password, 40);
@@ -72,6 +73,7 @@ void initWifi(){
   wifiManager.addParameter(&custom_mqtt_server);
   wifiManager.addParameter(&custom_mqtt_port);
   wifiManager.addParameter(&custom_strip_type);
+  wifiManager.addParameter(&custom_strip_length);
   wifiManager.addParameter(&custom_mqtt_ssl);
   wifiManager.addParameter(&custom_mqtt_username);
   wifiManager.addParameter(&custom_mqtt_password);
@@ -92,6 +94,7 @@ void initWifi(){
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
   strcpy(strip_type, custom_strip_type.getValue());
+  strcpy(strip_length, custom_strip_length.getValue());
   strcpy(mqtt_ssl, custom_mqtt_ssl.getValue());
   strcpy(mqtt_username, custom_mqtt_username.getValue());
   strcpy(mqtt_password, custom_mqtt_password.getValue());
@@ -107,6 +110,7 @@ void initWifi(){
     json["mqtt_server"] = mqtt_server;
     json["mqtt_port"] = mqtt_port;
     json["strip_type"] = strip_type;
+    json["strip_length"] = strip_length;
     json["mqtt_ssl"] = mqtt_ssl;
     json["mqtt_username"] = mqtt_username;
     json["mqtt_password"] = mqtt_password;
@@ -193,6 +197,7 @@ void initFS(){
           strcpy(mqtt_server, json["mqtt_server"]);
           strcpy(mqtt_port, json["mqtt_port"]);
           strcpy(strip_type, json["strip_type"]);
+          strcpy(strip_length, json["strip_length"]);
           strcpy(mqtt_ssl, json["mqtt_ssl"]);
           strcpy(mqtt_username, json["mqtt_username"]);
           strcpy(mqtt_password, json["mqtt_password"]);
@@ -251,7 +256,15 @@ void initStrip(){
   }
   else{
     //TODO
-    //busHandler = new AnimationHandlerBus()
+
+    //get strip length:
+    int length = atoi(strip_length);
+    if(length < 0){
+      debugFkt("Negative Strip_Length specified -> Bus Handler inititilized with one led, resetup board", ERROR);
+      busHandler = new AnimationHandlerBus(1, Silo, varSiloChanged, micHandler);
+    }else{
+      busHandler = new AnimationHandlerBus(length, Silo, varSiloChanged, micHandler);
+    }
   }
 }
 
