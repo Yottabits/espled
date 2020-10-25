@@ -61,7 +61,7 @@ void runAnimationHandler(){
   }
   else{
     //TODO
-    //busHandler->handle();
+    busHandler->handle();
   }
 }
 
@@ -82,9 +82,9 @@ void setup(){
 
   debugFkt("Ready", INFO);
   debugFkt("IP address: " + WiFi.localIP().toString(), INFO);
-  simpleStrip->showColor(CRGBWW{0,1023,0,1023,0});
+  //simpleStrip->showColor(CRGBWW{0,1023,0,1023,0});
   delay(500);
-  simpleStrip->showColor(CRGBWW{0,0,0,0,0});
+  //simpleStrip->showColor(CRGBWW{0,0,0,0,0});
 }
 
 void handleReconnect(){

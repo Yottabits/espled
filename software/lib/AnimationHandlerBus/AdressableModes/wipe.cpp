@@ -6,7 +6,7 @@ void AnimationHandlerBus::wipe()
 
     //update timing variables
     unsigned long now = millis();
-    bool wipeEndReached = now > (silo->lastChange + this->silo->time);
+    bool wipeEndReached = now > (silo->lastChange + this->silo->time*1000);
 
     //init static variables
     static unsigned long timePerLed = 0;
@@ -14,39 +14,45 @@ void AnimationHandlerBus::wipe()
     static unsigned int nextLed = 0;
 
     // Catch possible undefined Configurations
-    if(this->stripLength < 0){
-        debugFkt("Negative Strip Length but used WipeMode",ERROR);
+    if (this->stripLength < 0)
+    {
+        debugFkt("Negative Strip Length but used WipeMode", ERROR);
         return;
     }
 
     // handle reset of static vars through varSiloChanged
-    if(millis() < silo->lastChange + UPDATE_TIME){
+    if (millis() < silo->lastChange + UPDATE_TIME)
+    {
         //Reset static vars
         timePerLed = this->silo->time / this->stripLength;
         lastBufferChange = 0;
         nextLed = 0;
 
         //Validation of input vars
-
     }
 
-if (!wipeEndReached)
-    {       
-        bool changeNextLed = lastBufferChange + now > timePerLed;
-        if(changeNextLed){
+    if (!wipeEndReached)
+    {
+        bool changeNextLed = now > lastBufferChange + timePerLed;
+        if (changeNextLed)
+        {
+            debugFkt("NextLed", DEBUG);
             //Todo do this with conversion function
-            this->leds[nextLed].setRGB(silo->colorValue.R/4,silo->colorValue.G/4,silo->colorValue.B/4);
+            this->leds[nextLed].setRGB(silo->colorValue.R / 4, silo->colorValue.G / 4, silo->colorValue.B / 4);
             lastBufferChange = millis();
             nextLed++;
         }
 
         //set oldColor if strip is stored
-        if(nextLed == this->stripLength){
+        if (nextLed == this->stripLength)
+        {
             this->silo->oldColor = this->silo->colorValue;
+            debugFkt("full Strip changed", DEBUG);
         }
     }
     else
     {
+        debugFkt("Strip already in final", DEBUG);
         //strip is already final nothing to do
     }
 }

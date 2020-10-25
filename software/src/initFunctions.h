@@ -249,12 +249,14 @@ void initStrip(){
   micHandler = new MicHandler(Silo);
 
   if(type < 6){
-    debugFkt("Animation handler, strip and Silo initialized", INFO);
+    debugFkt("Animation handler, strip and Silo initialized [uniform strip]", INFO);
 
     simpleStrip = new StripControle(type);
     pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged, micHandler);
   }
   else{
+    
+    debugFkt("Animation handler, strip and Silo initialized [adressable strip]", INFO);
     //TODO
 
     //get strip length:

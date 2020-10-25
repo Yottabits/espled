@@ -17,7 +17,7 @@ AnimationHandlerBus::AnimationHandlerBus(unsigned int stripLength, varSilo *silo
 
     //Setup fastled lib with memory arrea and length
     //TODO setup template arguments
-    FastLED.addLeds<WS2812, 2>(leds, stripLength);
+    FastLED.addLeds<WS2812, 5>(leds, stripLength);
 }
 
 AnimationHandlerBus::~AnimationHandlerBus()
@@ -28,23 +28,39 @@ AnimationHandlerBus::~AnimationHandlerBus()
 
 void AnimationHandlerBus::handle()
 {
-    debugFkt("Bus Handler called", INFO);
-    if (silo->mode < 100)
-    {
-        //We are in a single color mode
+    unsigned int now = millis();
 
-        //Fill Complete Strip with color_Value calculated by getNewColor Function as
-        //with not individually adressable Strips
-        fill_solid(this->leds, this->stripLength, CRGBWW2FastLedCRGB(this->getNewColor()));
-    }
-    else
+    if (*varSiloChanged)
     {
-        //Wa are in a mode for individually adressable strips
-        this->getNewStripBuffer();
+        silo->lastChange = now;
+        
+        //silo->oldColor = strip->getColor();
+        //come up with an option
+        *varSiloChanged = false;
     }
 
-    //Write Current this->leds Buffer to Strip
-    FastLED.show();
+    //values for new frame need to get calculated
+    if (now > fpsTimer + UPDATE_TIME)
+    {
+        fpsTimer = now;
+
+        if (silo->mode < 100)
+        {
+            //We are in a single color mode
+
+            //Fill Complete Strip with color_Value calculated by getNewColor Function as
+            //with not individually adressable Strips
+            fill_solid(this->leds, this->stripLength, CRGBWW2FastLedCRGB(this->getNewColor()));
+        }
+        else
+        {
+            //Wa are in a mode for individually adressable strips
+            this->getNewStripBuffer();
+        }
+
+        //Write Current this->leds Buffer to Strip
+        FastLED.show();
+    }
 }
 
 CRGB AnimationHandlerBus::CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject)
@@ -92,7 +108,10 @@ void AnimationHandlerBus::getNewStripBuffer()
     switch (silo->mode)
     {
     case WIPE:
-        //fill_solid()
+        this->wipe();
+        break;
+    case NOISE:
+        this->noise();
         break;
 
     default:
