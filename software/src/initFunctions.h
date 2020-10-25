@@ -259,7 +259,12 @@ void initStrip(){
 
     //get strip length:
     int length = atoi(strip_length);
-    busHandler = new AnimationHandlerBus(length, Silo, varSiloChanged, micHandler);
+    if(length < 0){
+      debugFkt("Negative Strip_Length specified -> Bus Handler inititilized with one led, resetup board", ERROR);
+      busHandler = new AnimationHandlerBus(1, Silo, varSiloChanged, micHandler);
+    }else{
+      busHandler = new AnimationHandlerBus(length, Silo, varSiloChanged, micHandler);
+    }
   }
 }
 
