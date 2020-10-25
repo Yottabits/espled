@@ -11,6 +11,7 @@ const unsigned int pwmFreq = 2000;
 char mqtt_server[40];
 char mqtt_port[6] = "1883";
 char strip_type[8] = "RGB";
+char strip_length[5] = "100";
 char mqtt_ssl[3] = "no";
 char mqtt_username[40] = "esp";
 char mqtt_password[40] = "supersecurepassword";
