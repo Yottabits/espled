@@ -7,8 +7,12 @@ AnimationHandlerBus::AnimationHandlerBus(int stripLength, varSilo *silo, bool *v
     : AnimationHandler{silo, varSiloChanged, micHandler}
 {
 
-    //Allocate memory for CRGB led according to number of leds
+    //Allocate memory for CRGB led Buffer according to number of leds
     this->leds = (CRGB *)malloc(sizeof(CRGB) * stripLength);
+
+    //set this Buffer to zero
+    memset(this->leds, 0, stripLength*sizeof(CRGB)); 
+
     this->stripLength = stripLength;
 
     //Setup fastled lib with memory arrea and length
@@ -29,22 +33,16 @@ void AnimationHandlerBus::handle()
     {
         //We are in a single color mode 
 
-        //test
-        fill_solid(this->leds[0],this->stripLength,CRGBWW2FastLedCRGB(silo->colorValue));
+        //Fill Complete Strip with color_Value calculated by getNewColor Function as 
+        //with not individually adressable Strips
+        fill_solid(this->leds,this->stripLength,CRGBWW2FastLedCRGB(this->getNewColor()));
     }else
     {
-        //Wa are in a mode for adressable strips
-        //Todo Switch Case that runs functions that work directly on the memory block
-        switch (silo->mode)
-        {
-        case WIPE:
-            //fill_solid()
-            break;
-        
-        default:
-            break;
-        }
+        //Wa are in a mode for individually adressable strips
+        this->getNewStripBuffer();
     }
+
+    //Write Current this->leds Buffer to Strip
     FastLED.show(); 
     
 }
@@ -84,4 +82,17 @@ CRGBWW AnimationHandlerBus::getNewColor()
         return CRGBWW{0, 0, 0, 0, 0};
         break;
     }
+}
+
+void AnimationHandlerBus::getNewStripBuffer()
+{
+    switch (silo->mode)
+        {
+        case WIPE:
+            //fill_solid()
+            break;
+        
+        default:
+            break;
+        }
 }
