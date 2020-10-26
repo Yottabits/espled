@@ -1,7 +1,7 @@
 #include <StripControle.h>
 
 
-StripControle::StripControle(stripType type){
+StripControle::StripControle(StripType type){
   this->type = type;
   this->off();
 }

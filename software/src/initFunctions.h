@@ -29,7 +29,7 @@ extern void debugFkt(String, LogLevel);
 varSilo* Silo;
 bool* varSiloChanged = new bool(false);
 
-stripType type;
+StripType type;
 bool shouldSaveConfig = false;
 
 WiFiManager wifiManager;
@@ -236,11 +236,11 @@ void initStrip(){
   // initializes strip and variable Silo
   // depends on Strip-Settings made during wifi-setup process
 
-  if(strcmp(strip_type, "RGB") == 0) type = stripType::RGB_STRIP;
-  else if(strcmp(strip_type, "RGBW") == 0) type = stripType::RGBW_STRIP;
-  else if(strcmp(strip_type, "RGBWW") == 0) type = stripType::RGBWW_STRIP;
-  else if(strcmp(strip_type, "WS2812") == 0) type = stripType::WS2812_STRIP;
-  else if(strcmp(strip_type, "APA102") == 0) type = stripType::APA102_STRIP;
+  if(strcmp(strip_type, "RGB") == 0) type = StripType::RGB_STRIP;
+  else if(strcmp(strip_type, "RGBW") == 0) type = StripType::RGBW_STRIP;
+  else if(strcmp(strip_type, "RGBWW") == 0) type = StripType::RGBWW_STRIP;
+  else if(strcmp(strip_type, "WS2812") == 0) type = StripType::WS2812_STRIP;
+  else if(strcmp(strip_type, "APA102") == 0) type = StripType::APA102_STRIP;
 
   // allokate Storage for varSilo and oldVarSilo
   Silo = new varSilo();
@@ -255,7 +255,7 @@ void initStrip(){
     pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged, micHandler);
   }
   else{
-    
+
     debugFkt("Animation handler, strip and Silo initialized [adressable strip]", INFO);
     //TODO
 
