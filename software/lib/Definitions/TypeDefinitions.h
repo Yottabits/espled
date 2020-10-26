@@ -46,7 +46,7 @@ enum StripType
   RGB_STRIP = 3,
   RGBW_STRIP,
   RGBWW_STRIP,
-  WS2812_STRIP,
+  WS2812_STRIP, //Assumed GRB order of coloring - if error add new Type 
   APA102_STRIP
 };
 
