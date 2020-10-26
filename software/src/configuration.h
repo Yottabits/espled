@@ -24,7 +24,4 @@ char debugTopic[80];
 const char* fingerprint = "A6 AE 85 65 63 DD D8 7C 70 F7 92 73 DE 8F 18 2B 9F DA 0A 76";
 const LogLevel LOGLEVEL = DEBUG;
 
-
-//Adjustments for Adressable Strips
-EOrder rgbOrder = GRB; //switches red and green channel
 #endif
