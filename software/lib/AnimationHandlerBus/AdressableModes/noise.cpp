@@ -3,8 +3,6 @@
 
 void AnimationHandlerBus::noise()
 {
-    debugFkt("Current mode" + (String)silo->mode, DEBUG);
-
     if (this->silo->frequency == 0 || this->silo->frequency > 60)
     {
         debugFkt("Frequency was set to 0 or over 60 this is not possible", ERROR);

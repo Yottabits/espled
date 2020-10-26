@@ -2,17 +2,16 @@
 
 void AnimationHandlerBus::wipe()
 {
-    debugFkt("Current mode" + (String)silo->mode, DEBUG);
+    //debugFkt("Current mode" + (String)silo->mode, DEBUG);
 
     //update timing variables
     unsigned long now = millis();
-    bool wipeEndReached = now > (silo->lastChange + this->silo->time*1000);
+    bool wipeEndReached = now > (silo->lastChange + this->silo->time + UPDATE_TIME);
+    static CRGB Color = CRGB::Black;
 
     //init static variables
     static unsigned long timePerLed = 0;
-    static unsigned long lastBufferChange = 0;
-    static unsigned int nextLed = 0;
-
+    
     // Catch possible undefined Configurations
     if (this->stripLength < 0)
     {
@@ -25,34 +24,25 @@ void AnimationHandlerBus::wipe()
     {
         //Reset static vars
         timePerLed = this->silo->time / this->stripLength;
-        lastBufferChange = 0;
-        nextLed = 0;
+        if(timePerLed < 1) timePerLed = 1;
 
-        //Validation of input vars
+        Color = CRGBWW2FastLedCRGB(silo->colorValue);
     }
 
     if (!wipeEndReached)
     {
-        bool changeNextLed = now > lastBufferChange + timePerLed;
-        if (changeNextLed)
-        {
-            debugFkt("NextLed", DEBUG);
-            //Todo do this with conversion function
-            this->leds[nextLed].setRGB(silo->colorValue.R / 4, silo->colorValue.G / 4, silo->colorValue.B / 4);
-            lastBufferChange = millis();
-            nextLed++;
-        }
+        unsigned int numberOfLedsToTurnOn = (now - silo->lastChange) / timePerLed;
+        if(numberOfLedsToTurnOn > this->stripLength) numberOfLedsToTurnOn = this->stripLength;
 
-        //set oldColor if strip is stored
-        if (nextLed == this->stripLength)
-        {
-            this->silo->oldColor = this->silo->colorValue;
-            debugFkt("full Strip changed", DEBUG);
+        
+        for(unsigned int i=0; i <= numberOfLedsToTurnOn; i++ ){
+            this->leds[i] = Color;
         }
     }
     else
     {
-        debugFkt("Strip already in final", DEBUG);
-        //strip is already final nothing to do
+        for(unsigned int i=0; i <= this->stripLength; i++ ){
+            this->leds[i] = Color;
+        }
     }
 }
