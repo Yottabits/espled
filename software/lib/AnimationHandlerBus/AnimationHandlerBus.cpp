@@ -34,7 +34,7 @@ void AnimationHandlerBus::handle()
     {
         silo->lastChange = now;
         
-        //silo->oldColor = strip->getColor();
+        silo->oldColor = FastLedCRGB2CRGBWW(this->leds[0]);
         //come up with an option
         *varSiloChanged = false;
     }
@@ -74,6 +74,17 @@ CRGB AnimationHandlerBus::CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject)
     return CRGBColorObject;
 }
 
+CRGBWW AnimationHandlerBus::FastLedCRGB2CRGBWW(CRGB CRGBColorObject)
+{
+    CRGBWW CRGBWWColorObject;
+    CRGBWWColorObject.R = CRGBColorObject.r * 4;
+    CRGBWWColorObject.G = CRGBColorObject.g * 4;
+    CRGBWWColorObject.B = CRGBColorObject.b * 4;
+    //Todo include CW WW values
+
+    return CRGBWWColorObject;
+}
+
 CRGBWW AnimationHandlerBus::getNewColor()
 {
     switch (silo->mode)
@@ -107,10 +118,10 @@ void AnimationHandlerBus::getNewStripBuffer()
 {
     switch (silo->mode)
     {
-    case WIPE:
+    case WIPE://100
         this->wipe();
         break;
-    case NOISE:
+    case NOISE://101
         this->noise();
         break;
 

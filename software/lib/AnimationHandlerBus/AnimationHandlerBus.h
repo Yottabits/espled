@@ -21,6 +21,7 @@ public:
   
   //Helpers
   CRGB CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject);
+  CRGBWW FastLedCRGB2CRGBWW(CRGB CRGBColorObject);
 
   //Aderssable Modes
   void wipe();
