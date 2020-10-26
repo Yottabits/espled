@@ -29,7 +29,7 @@ extern void debugFkt(String, LogLevel);
 varSilo* Silo;
 bool* varSiloChanged = new bool(false);
 
-StripType type;
+StripType *type = new StripType();
 bool shouldSaveConfig = false;
 
 WiFiManager wifiManager;
@@ -236,11 +236,11 @@ void initStrip(){
   // initializes strip and variable Silo
   // depends on Strip-Settings made during wifi-setup process
 
-  if(strcmp(strip_type, "RGB") == 0) type = StripType::RGB_STRIP;
-  else if(strcmp(strip_type, "RGBW") == 0) type = StripType::RGBW_STRIP;
-  else if(strcmp(strip_type, "RGBWW") == 0) type = StripType::RGBWW_STRIP;
-  else if(strcmp(strip_type, "WS2812") == 0) type = StripType::WS2812_STRIP;
-  else if(strcmp(strip_type, "APA102") == 0) type = StripType::APA102_STRIP;
+  if(strcmp(strip_type, "RGB") == 0) *type = StripType::RGB_STRIP;
+  else if(strcmp(strip_type, "RGBW") == 0) *type = StripType::RGBW_STRIP;
+  else if(strcmp(strip_type, "RGBWW") == 0) *type = StripType::RGBWW_STRIP;
+  else if(strcmp(strip_type, "WS2812") == 0) *type = StripType::WS2812_STRIP;
+  else if(strcmp(strip_type, "APA102") == 0) *type = StripType::APA102_STRIP;
 
   // allokate Storage for varSilo and oldVarSilo
   Silo = new varSilo();
@@ -248,10 +248,10 @@ void initStrip(){
 
   micHandler = new MicHandler(Silo);
 
-  if(type < 6){
+  if(*type < 6){
     debugFkt("Animation handler, strip and Silo initialized [uniform strip]", INFO);
 
-    simpleStrip = new StripControle(type);
+    simpleStrip = new StripControle(*type);
     pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged, micHandler);
   }
   else{
@@ -263,9 +263,9 @@ void initStrip(){
     int length = atoi(strip_length);
     if(length < 0){
       debugFkt("Negative Strip_Length specified -> Bus Handler inititilized with one led, resetup board", ERROR);
-      busHandler = new AnimationHandlerBus(1, Silo, varSiloChanged, micHandler);
+      busHandler = new AnimationHandlerBus(type, 1, Silo, varSiloChanged, micHandler);
     }else{
-      busHandler = new AnimationHandlerBus(length, Silo, varSiloChanged, micHandler);
+      busHandler = new AnimationHandlerBus(type, length, Silo, varSiloChanged, micHandler);
     }
   }
 }

@@ -3,7 +3,7 @@
 
 extern void debugFkt(String, LogLevel);
 
-AnimationHandlerBus::AnimationHandlerBus(unsigned int stripLength, varSilo *silo, bool *varSiloChanged, MicHandler *micHandler)
+AnimationHandlerBus::AnimationHandlerBus(StripType *stripType, unsigned int stripLength, varSilo *silo, bool *varSiloChanged, MicHandler *micHandler)
     : AnimationHandler{silo, varSiloChanged, micHandler}
 {
 
@@ -17,7 +17,19 @@ AnimationHandlerBus::AnimationHandlerBus(unsigned int stripLength, varSilo *silo
 
     //Setup fastled lib with memory arrea and length
     //TODO setup template arguments
-    FastLED.addLeds<WS2812, 5>(leds, stripLength);
+    switch(*stripType){
+      case WS2812_STRIP:
+        FastLED.addLeds<WS2812, pinData, GRB>(leds, stripLength);
+        debugFkt("WS2812 Bus initialized", INFO);
+        break;
+      case APA102_STRIP:
+        FastLED.addLeds<APA102, pinData, pinClock>(leds, stripLength);
+        debugFkt("APA102 Bus initialized", INFO);
+        break;
+      default:
+        debugFkt("Unknown stripType in AnimationHandlerBus or not implemented yet", ERROR);
+        break;
+    }
 }
 
 AnimationHandlerBus::~AnimationHandlerBus()
@@ -35,7 +47,6 @@ void AnimationHandlerBus::handle()
         silo->lastChange = now;
         
         silo->oldColor = FastLedCRGB2CRGBWW(this->leds[0]);
-        //come up with an option
         *varSiloChanged = false;
     }
 
