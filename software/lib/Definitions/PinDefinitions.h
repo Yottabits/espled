@@ -9,6 +9,7 @@
 #define pinCW 13
 #define pinM 2
 #define pinData 5 //Channel 1
+#define pinClock 3
 //---------------
 
 //---------------------------------------------------------------

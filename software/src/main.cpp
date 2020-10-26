@@ -56,7 +56,7 @@ void firmmareReset(){
 
 
 void runAnimationHandler(){
-  if(type < 6){
+  if(*type < 6){
     pwmHandler->handle();
   }
   else{

@@ -7,9 +7,10 @@
 class AnimationHandlerBus : AnimationHandler
 {
 public:
-  AnimationHandlerBus(unsigned int stripLength, 
-                      varSilo *silo,  
-                      bool *varSiloChanged, 
+  AnimationHandlerBus(StripType *stripType,
+                      unsigned int stripLength,
+                      varSilo *silo,
+                      bool *varSiloChanged,
                       MicHandler *micHandler);
 
   ~AnimationHandlerBus();
@@ -18,7 +19,7 @@ public:
 
   CRGBWW getNewColor();
   void getNewStripBuffer();
-  
+
   //Helpers
   CRGB CRGBWW2FastLedCRGB(CRGBWW CRGBWWColorObject);
 
