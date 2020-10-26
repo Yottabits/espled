@@ -9,14 +9,14 @@
 class StripControle{
 public:
 
-  StripControle(stripType type);
+  StripControle(StripType type);
   void showColor(CRGBWW);
   void off();
   CRGBWW getColor();
 
 private:
 
-  stripType type;
+  StripType type;
   CRGBWW channelValue;
 
   CRGBWW RGBW2RGB();

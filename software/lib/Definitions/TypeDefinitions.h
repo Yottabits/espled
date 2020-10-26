@@ -41,7 +41,7 @@ typedef struct varSilo
 } varSilo;
 
 //Supported LED Strip Types
-enum stripType
+enum StripType
 {
   RGB_STRIP = 3,
   RGBW_STRIP,
