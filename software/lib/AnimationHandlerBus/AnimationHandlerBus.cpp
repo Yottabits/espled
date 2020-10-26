@@ -18,14 +18,17 @@ AnimationHandlerBus::AnimationHandlerBus(StripType *stripType, unsigned int stri
     //Setup fastled lib with memory arrea and length
     //TODO setup template arguments
     switch(*stripType){
-      case WS2812_STRIP:{
+      case WS2812_STRIP:
         FastLED.addLeds<WS2812, pinData, GRB>(leds, stripLength);
+        debugFkt("WS2812 Bus initialized", INFO);
         break;
-      }
-      case APA102_STRIP:{
+      case APA102_STRIP:
         FastLED.addLeds<APA102, pinData, pinClock>(leds, stripLength);
+        debugFkt("APA102 Bus initialized", INFO);
         break;
-      }
+      default:
+        debugFkt("Unknown stripType in AnimationHandlerBus or not implemented yet", ERROR);
+        break;
     }
 }
 
