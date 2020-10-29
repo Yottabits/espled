@@ -45,7 +45,7 @@ void AnimationHandlerBus::handle()
     if (*varSiloChanged)
     {
         silo->lastChange = now;
-        
+
         silo->oldColor = FastLedCRGB2CRGBWW(this->leds[0]);
         *varSiloChanged = false;
     }
@@ -135,8 +135,11 @@ void AnimationHandlerBus::getNewStripBuffer()
     case NOISE://101
         this->noise();
         break;
-
+    case VU_METER:
+        this->vuMeter();
+        break;
     default:
+        debugFkt("The Selected Mode is not implemented yet", ERROR);
         break;
     }
 }
