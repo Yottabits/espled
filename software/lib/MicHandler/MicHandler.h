@@ -9,7 +9,7 @@
 
 #define samplingFrequency 1000
 #define samplingDelay 1000/samplingFrequency
-#define ringBufferSize 64
+#define ringBufferSize 128
 
 extern void debugFkt(String, LogLevel);
 
@@ -22,9 +22,11 @@ class MicHandler{
     void getMaxAmplitude();
     void getPeakFrequency();
     void averageAmplitude();
+    double getAverageAmplitude();
 
     void printVector();
 
+    float audioRingBuffer[ringBufferSize];
   private:
     void recordAudioSample();
     varSilo* silo;
@@ -34,7 +36,6 @@ class MicHandler{
     double fourierBufferImag[ringBufferSize];
 
     unsigned int audioTimer = 0;
-    float audioRingBuffer[ringBufferSize];
     unsigned int ringBufferCounter = 0;
 
 };

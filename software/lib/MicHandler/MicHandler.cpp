@@ -4,6 +4,7 @@ extern "C" {
 #include "user_interface.h"
 }
 
+
 MicHandler::MicHandler(varSilo* silo){
   this->silo = silo;
 }
@@ -52,7 +53,21 @@ void MicHandler::calculateFFT(){
       debugFkt("FFT: Magnitude", DEBUG);
 }
 
+
 void MicHandler::recordAudioSample(){
+      //audioRingBuffer[ringBufferCounter++] = /1024.0;
       audioRingBuffer[ringBufferCounter++] = system_adc_read()/1024.0;
       if(ringBufferCounter == ringBufferSize) ringBufferCounter = 0;
   }
+
+double MicHandler::getAverageAmplitude(){
+  double volume = 0;
+  for(int i = 0; i < ringBufferSize; i++){
+    //remove DC offset and calculate signal energy of sampled audio
+    volume += (audioRingBuffer[i] - 0.5) * (audioRingBuffer[i] - 0.5);
+  }
+
+    //normalize values
+    volume /= ringBufferSize/4;
+  return volume;
+}
