@@ -11,21 +11,20 @@ MicHandler::MicHandler(varSilo* silo){
 void MicHandler::handleMic(){
  unsigned int now = millis();
 
-
-  if(now > audioTimer + samplingDelay && silo->mode == SOUND_2_LIGHT){
+  if(now > audioTimer + samplingDelay && (silo->mode == SOUND_2_LIGHT  || silo->mode == VU_METER)){
     audioTimer = now;
     recordAudioSample();
   }
 }
 
-void MicHandler::printVector(double *vData, uint16_t bufferSize)
+void MicHandler::printVector()
 {
-  for (uint16_t i = 0; i < (bufferSize >> 1); i++)
+  for (uint16_t i = 0; i < (ringBufferSize >> 1); i++)
   {
     double abscissa = ((i * 1.0 * samplingFrequency) / ringBufferSize);
 
     String bar = "";
-    for(unsigned int j = 0; j < vData[i]*10; j++) bar += "|";
+    for(unsigned int j = 0; j < fourierBufferImag[i]*10; j++) bar += "|";
 
     debugFkt(String(abscissa, 2) + "Hz: " + bar, DEBUG);
   }

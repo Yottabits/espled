@@ -23,7 +23,7 @@ class MicHandler{
     void getPeakFrequency();
     void averageAmplitude();
 
-    void printVector(double *vData, uint16_t bufferSize);
+    void printVector();
 
   private:
     void recordAudioSample();
