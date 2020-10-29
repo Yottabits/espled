@@ -97,7 +97,7 @@ unsigned int cycleCount = 0;
 unsigned int freeHeap = 0;
 
 void loop() {
-  //cycleCount = ESP.getCycleCount();
+  cycleCount = ESP.getCycleCount();
   //OTA Handler
   ArduinoOTA.handle();
 
