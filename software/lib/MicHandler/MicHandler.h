@@ -20,7 +20,7 @@ class MicHandler{
     void handleMic();
     void calculateFFT();
     void getMaxAmplitude();
-    void getPeakFrequency();
+    double getPeakFrequency();
     void averageAmplitude();
     double getAverageAmplitude();
 

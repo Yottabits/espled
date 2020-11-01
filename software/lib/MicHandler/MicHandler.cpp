@@ -19,14 +19,18 @@ void MicHandler::handleMic(){
  }
 }
 
+double MicHandler::getPeakFrequency(){
+  return FFT.MajorPeak(fourierBufferReal, ringBufferSize, samplingFrequency);
+}
+
 void MicHandler::printVector()
 {
-  for (uint16_t i = 0; i < (ringBufferSize >> 1); i=i+2)
+  for (uint16_t i = 3; i < (ringBufferSize >> 1); i++)
   {
     double abscissa = ((i * 1.0 * samplingFrequency) / ringBufferSize);
 
     String bar = "";
-    for(unsigned int j = 0; j < fourierBufferImag[i]*10; j++) bar += "|";
+    for(unsigned int j = 0; j < fourierBufferReal[i]*10; j++) bar += "|";
 
     debugFkt(String(abscissa, 2) + "Hz: " + bar, DEBUG);
   }
