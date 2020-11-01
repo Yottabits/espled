@@ -10,6 +10,7 @@ void AnimationHandlerBus::vuMeter()
     static unsigned int maxAmplitudeLed = 0;
     static unsigned int fourierTimer = 0;
 
+
     unsigned int numberOfLedsToTurnOn = (micHandler->getAverageAmplitude() * (1 + (silo->sensitivity * 0.09))) * this->stripLength;
     if(numberOfLedsToTurnOn > this->stripLength)
       numberOfLedsToTurnOn = this->stripLength;
@@ -18,6 +19,7 @@ void AnimationHandlerBus::vuMeter()
       maxAmplitudeLed = numberOfLedsToTurnOn;
 
     CRGB color = CRGBWW2FastLedCRGB(silo->colorValue);
+    //static CRGB color = CRGB::Black;
 
     for(unsigned int i = 0; i<numberOfLedsToTurnOn; i++){
       this->leds[i] = color;
@@ -32,15 +34,11 @@ void AnimationHandlerBus::vuMeter()
       maxLedDownTimer = now;
       maxAmplitudeLed--;
     }
-    if(now - fourierTimer > 3000){
+    if(now - fourierTimer > 500){
       fourierTimer = now;
-      // String rawFloats;
-      // for(int i = 0; i < ringBufferSize; i++){
-      //   rawFloats += String(micHandler->audioRingBuffer[i]) + ", ";
-      // }
-      //debugFkt(rawFloats, DEBUG);
-      micHandler->calculateFFT();
-      micHandler->printVector();
+      //micHandler->calculateFFT();
+      //micHandler->printVector();
+      //color = CRGB((int)(micHandler->getPeakFrequency()/2.0),0,0);
     }
 
 
