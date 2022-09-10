@@ -2,29 +2,30 @@
 #include <initFunctions.h>
 //--Includes--------------------------------------------------------------------
 
-
-void debugFkt(String message, LogLevel LevelOfMessage){
+void debugFkt(String message, LogLevel LevelOfMessage)
+{
   // Function which handles the debugging
   // Prints messages depending on log_level to MQTT and Serial
 
-  if(LOGLEVEL <= LevelOfMessage){
+  if (LOGLEVEL <= LevelOfMessage)
+  {
     //Add Level to message
     switch (LevelOfMessage)
     {
     case VERBOSE:
-      message = "[VERBOSE]:"+message;
+      message = "[VERBOSE]:" + message;
       break;
     case DEBUG:
-      message = "[DEBUG]:"+message;
+      message = "[DEBUG]:" + message;
       break;
     case INFO:
-      message = "[INFO]:"+message;
+      message = "[INFO]:" + message;
       break;
     case WARNING:
-      message = "[WARNING]:"+message;
+      message = "[WARNING]:" + message;
       break;
     case ERROR:
-      message = "[ERROR]:"+message;
+      message = "[ERROR]:" + message;
       break;
     default:
       break;
@@ -32,20 +33,21 @@ void debugFkt(String message, LogLevel LevelOfMessage){
     message += "";
 
     static unsigned int lastMQTTPublished = 0;
-    //if(millis() > lastMQTTPublished + 100F){
+    if (millis() > lastMQTTPublished + 100)
+    {
       lastMQTTPublished = millis();
-      if(client.connected())
+      if (client.connected())
         client.publish(debugTopic, message.c_str());
-      Serial.println(message);
-    //}
-
+    }
+    Serial.println(message);
   }
 }
 
-
-void firmmareReset(){
+void firmmareReset()
+{
   delay(2000);
-  if(digitalRead(pinM) == LOW){
+  if (digitalRead(pinM) == LOW)
+  {
     wifiManager.resetSettings();
     SPIFFS.format();
     digitalWrite(pinB, HIGH);
@@ -54,19 +56,21 @@ void firmmareReset(){
   }
 }
 
-
-void runAnimationHandler(){
-  if(*type < 6){
+void runAnimationHandler()
+{
+  if (*type < 6)
+  {
     pwmHandler->handle();
   }
-  else{
+  else
+  {
     //TODO
     busHandler->handle();
   }
 }
 
-
-void setup(){
+void setup()
+{
   initPins();
 
   firmmareReset();
@@ -87,16 +91,19 @@ void setup(){
   //simpleStrip->showColor(CRGBWW{0,0,0,0,0});
 }
 
-void handleReconnect(){
-  if(!client.connected()) {
-      initMQTT();
-    }
+void handleReconnect()
+{
+  if (!client.connected())
+  {
+    initMQTT();
+  }
 }
 
 unsigned int cycleCount = 0;
 unsigned int freeHeap = 0;
 
-void loop() {
+void loop()
+{
   cycleCount = ESP.getCycleCount();
   //OTA Handler
   ArduinoOTA.handle();
@@ -113,14 +120,13 @@ void loop() {
   //Handle MQTT routine
   client.loop();
 
-
-
   //Debug system resources
-  if(!(millis() % 500)){
+  if (!(millis() % 500))
+  {
     debugFkt(
-      "cycleCount: " + String(ESP.getCycleCount() - cycleCount) +
-      " LoopTime: " + String((ESP.getCycleCount() - cycleCount) / 80000.0) + "ms" +
-      " freeHeap: " + String(ESP.getFreeHeap() / 1000.0) + "kB"
-    , VERBOSE);
+        "cycleCount: " + String(ESP.getCycleCount() - cycleCount) +
+            " LoopTime: " + String((ESP.getCycleCount() - cycleCount) / 80000.0) + "ms" +
+            " freeHeap: " + String(ESP.getFreeHeap() / 1000.0) + "kB",
+        VERBOSE);
   }
 }

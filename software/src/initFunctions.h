@@ -23,11 +23,9 @@
 
 extern void debugFkt(String, LogLevel);
 
-
-
 //ToDo Fix typo
-varSilo* Silo;
-bool* varSiloChanged = new bool(false);
+varSilo *Silo;
+bool *varSiloChanged = new bool(false);
 
 StripType *type = new StripType();
 bool shouldSaveConfig = false;
@@ -42,21 +40,22 @@ WiFiClientSecure espClientSecure;
 
 PubSubClient client;
 
-StripControle* simpleStrip;
-MicHandler* micHandler;
+StripControle *simpleStrip;
+MicHandler *micHandler;
 
-AnimationHandlerPWM* pwmHandler;
-AnimationHandlerBus* busHandler;
+AnimationHandlerPWM *pwmHandler;
+AnimationHandlerBus *busHandler;
 //TODO: Adressable Strip
 
-
 //callback notifying us of the need to save config
-void saveConfigCallback () {
+void saveConfigCallback()
+{
   debugFkt("Should save config", INFO);
   shouldSaveConfig = true;
 }
 
-void initWifi(){
+void initWifi()
+{
   // Initializes Wifi on esp8266 uses wifi-manager to spin up a http server + captive portal for the setup process
   // Settings are saved of filesystem (json) and are recovered automatically once saved
 
@@ -90,7 +89,6 @@ void initWifi(){
   strcat(debugTopic, mainTopic);
   strcat(debugTopic, "/debug");
 
-
   strcpy(mqtt_server, custom_mqtt_server.getValue());
   strcpy(mqtt_port, custom_mqtt_port.getValue());
   strcpy(strip_type, custom_strip_type.getValue());
@@ -99,9 +97,9 @@ void initWifi(){
   strcpy(mqtt_username, custom_mqtt_username.getValue());
   strcpy(mqtt_password, custom_mqtt_password.getValue());
 
-
   //save the custom parameters to FS
-  if (shouldSaveConfig) {
+  if (shouldSaveConfig)
+  {
     debugFkt("saving config", INFO);
 
     DynamicJsonDocument doc(4000);
@@ -115,9 +113,9 @@ void initWifi(){
     json["mqtt_username"] = mqtt_username;
     json["mqtt_password"] = mqtt_password;
 
-
     File configFile = SPIFFS.open("/config.json", "w");
-    if (!configFile) {
+    if (!configFile)
+    {
       debugFkt("failed to open config file for writing", ERROR);
     }
 
@@ -128,53 +126,68 @@ void initWifi(){
   }
 }
 
-
-void initOta(){
+void initOta()
+{
   //TODO: Password
   //Init OTA update routine
-  ArduinoOTA.onStart([]() {
-    String type;
-    if (ArduinoOTA.getCommand() == U_FLASH) {
-      type = "sketch";
-    } else { // U_SPIFFS
-      type = "filesystem";
-    }
-    debugFkt("Start updating " + type, INFO);
-  });
-  ArduinoOTA.onEnd([]() {
-    debugFkt("End", INFO);
-  });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-  });
-  ArduinoOTA.onError([](ota_error_t error) {
-    Serial.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) {
-      debugFkt("Auth Failed", ERROR);
-    } else if (error == OTA_BEGIN_ERROR) {
-      debugFkt("Begin Failed", ERROR);
-    } else if (error == OTA_CONNECT_ERROR) {
-      debugFkt("Connect Failed", ERROR);
-    } else if (error == OTA_RECEIVE_ERROR) {
-      debugFkt("Receive Failed", ERROR);
-    } else if (error == OTA_END_ERROR) {
-      debugFkt("End Failed", ERROR);
-    }
-  });
+  ArduinoOTA.onStart([]()
+                     {
+                       String type;
+                       if (ArduinoOTA.getCommand() == U_FLASH)
+                       {
+                         type = "sketch";
+                       }
+                       else
+                       { // U_SPIFFS
+                         type = "filesystem";
+                       }
+                       debugFkt("Start updating " + type, INFO);
+                     });
+  ArduinoOTA.onEnd([]()
+                   { debugFkt("End", INFO); });
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
+                        { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); });
+  ArduinoOTA.onError([](ota_error_t error)
+                     {
+                       Serial.printf("Error[%u]: ", error);
+                       if (error == OTA_AUTH_ERROR)
+                       {
+                         debugFkt("Auth Failed", ERROR);
+                       }
+                       else if (error == OTA_BEGIN_ERROR)
+                       {
+                         debugFkt("Begin Failed", ERROR);
+                       }
+                       else if (error == OTA_CONNECT_ERROR)
+                       {
+                         debugFkt("Connect Failed", ERROR);
+                       }
+                       else if (error == OTA_RECEIVE_ERROR)
+                       {
+                         debugFkt("Receive Failed", ERROR);
+                       }
+                       else if (error == OTA_END_ERROR)
+                       {
+                         debugFkt("End Failed", ERROR);
+                       }
+                     });
   ArduinoOTA.begin();
 }
 
-
-void initFS(){
+void initFS()
+{
   debugFkt("mounting FS...", INFO);
 
-  if (SPIFFS.begin()) {
+  if (SPIFFS.begin())
+  {
     debugFkt("mounted file system", INFO);
-    if (SPIFFS.exists("/config.json")) {
+    if (SPIFFS.exists("/config.json"))
+    {
       //file exists, reading and loading
       debugFkt("reading config file", INFO);
       File configFile = SPIFFS.open("/config.json", "r");
-      if (configFile) {
+      if (configFile)
+      {
         debugFkt("opened config file", INFO);
         size_t size = configFile.size();
         // Allocate a buffer to store contents of the file.
@@ -184,37 +197,48 @@ void initFS(){
 
         DynamicJsonDocument doc(2000);
         DeserializationError error = deserializeJson(doc, buf.get());
-        if (error) {
+        if (error)
+        {
         }
         JsonObject json = doc.as<JsonObject>();
 
-
-
         serializeJson(json, Serial);
-        if (!json.isNull()) {
+        if (!json.isNull())
+        {
           debugFkt("parsed json", INFO);
 
-          strcpy(mqtt_server, json["mqtt_server"]);
-          strcpy(mqtt_port, json["mqtt_port"]);
-          strcpy(strip_type, json["strip_type"]);
-          strcpy(strip_length, json["strip_length"]);
-          strcpy(mqtt_ssl, json["mqtt_ssl"]);
-          strcpy(mqtt_username, json["mqtt_username"]);
-          strcpy(mqtt_password, json["mqtt_password"]);
-
-        } else {
+          // strcpy(mqtt_server, json["mqtt_server"]);
+          // strcpy(mqtt_port, json["mqtt_port"]);
+          // strcpy(strip_type, json["strip_type"]);
+          // strcpy(strip_length, json["strip_length"]);
+          // strcpy(mqtt_ssl, json["mqtt_ssl"]);
+          // strcpy(mqtt_username, json["mqtt_username"]);
+          // strcpy(mqtt_password, json["mqtt_password"]);
+          strcpy(mqtt_server, "192.168.1.169");
+          strcpy(mqtt_port, "8883");
+          strcpy(strip_type, "WS2812");
+          strcpy(strip_length, "200");
+          strcpy(mqtt_ssl, "yes");
+          strcpy(mqtt_username, "espled-desk");
+          strcpy(mqtt_password, "VWmwhjGr2dQRW2JJkU");
+        }
+        else
+        {
           debugFkt("failed to load json config", ERROR);
         }
         configFile.close();
       }
     }
-  } else {
+  }
+  else
+  {
     debugFkt("failed to mount FS", ERROR);
   }
   debugFkt("Finished spiffs", INFO);
 }
 
-void initPins(){
+void initPins()
+{
   pinMode(pinR, OUTPUT);
   pinMode(pinG, OUTPUT);
   pinMode(pinB, OUTPUT);
@@ -232,15 +256,21 @@ void initPins(){
   analogWriteFreq(pwmFreq);
 }
 
-void initStrip(){
+void initStrip()
+{
   // initializes strip and variable Silo
   // depends on Strip-Settings made during wifi-setup process
 
-  if(strcmp(strip_type, "RGB") == 0) *type = StripType::RGB_STRIP;
-  else if(strcmp(strip_type, "RGBW") == 0) *type = StripType::RGBW_STRIP;
-  else if(strcmp(strip_type, "RGBWW") == 0) *type = StripType::RGBWW_STRIP;
-  else if(strcmp(strip_type, "WS2812") == 0) *type = StripType::WS2812_STRIP;
-  else if(strcmp(strip_type, "APA102") == 0) *type = StripType::APA102_STRIP;
+  if (strcmp(strip_type, "RGB") == 0)
+    *type = StripType::RGB_STRIP;
+  else if (strcmp(strip_type, "RGBW") == 0)
+    *type = StripType::RGBW_STRIP;
+  else if (strcmp(strip_type, "RGBWW") == 0)
+    *type = StripType::RGBWW_STRIP;
+  else if (strcmp(strip_type, "WS2812") == 0)
+    *type = StripType::WS2812_STRIP;
+  else if (strcmp(strip_type, "APA102") == 0)
+    *type = StripType::APA102_STRIP;
 
   // allokate Storage for varSilo and oldVarSilo
   Silo = new varSilo();
@@ -248,32 +278,38 @@ void initStrip(){
 
   micHandler = new MicHandler(Silo);
 
-  if(*type < 6){
+  if (*type < 6)
+  {
     debugFkt("Animation handler, strip and Silo initialized [uniform strip]", INFO);
 
     simpleStrip = new StripControle(*type);
     pwmHandler = new AnimationHandlerPWM(simpleStrip, Silo, varSiloChanged, micHandler);
   }
-  else{
+  else
+  {
 
     debugFkt("Animation handler, strip and Silo initialized [adressable strip]", INFO);
     //TODO
 
     //get strip length:
-    int length = atoi(strip_length);
-    if(length < 0){
+    int length = 300;
+    if (length < 0)
+    {
       debugFkt("Negative Strip_Length specified -> Bus Handler inititilized with one led, resetup board", ERROR);
       busHandler = new AnimationHandlerBus(type, 1, Silo, varSiloChanged, micHandler);
-    }else{
+    }
+    else
+    {
       busHandler = new AnimationHandlerBus(type, length, Silo, varSiloChanged, micHandler);
     }
   }
 }
 
-
 //WARNING: If received json incomplete, increase MQTT_MAX_PACKET_SIZE in PubSunClient Library
-void callback(char* topic, byte* payload, unsigned int length) {
-  for (unsigned int i = 0; i < length; i++) {
+void callback(char *topic, byte *payload, unsigned int length)
+{
+  for (unsigned int i = 0; i < length; i++)
+  {
     Serial.print((char)payload[i]);
   }
 
@@ -286,38 +322,50 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // if we are currently in a temporary mode and the new mode in the mqtt message is
   // also a temporary mode - dismiss message
-  if(Silo->oldVarSilo->mode == 1 && doc["mode"] == 1){
+  if (Silo->oldVarSilo->mode == 1 && doc["mode"] == 1)
+  {
     return;
   }
 
   //Store varSilo State to oldVarSilo (deep copy)
   *(Silo->oldVarSilo) = *Silo;
 
-  if(doc.containsKey("mode")) Silo->mode = doc["mode"];
-  if(doc.containsKey("color")){
+  if (doc.containsKey("mode"))
+    Silo->mode = doc["mode"];
+  if (doc.containsKey("color"))
+  {
     Silo->colorValue.R = doc["color"][0];
     Silo->colorValue.G = doc["color"][1];
     Silo->colorValue.B = doc["color"][2];
     Silo->colorValue.WW = doc["color"][3];
     Silo->colorValue.CW = doc["color"][4];
   }
-  if(doc.containsKey("time")) Silo->time = doc["time"];
-  if(doc.containsKey("frequency")) Silo->frequency = doc["frequency"];
-  if(doc.containsKey("sensitivity")) Silo->sensitivity = doc["sensitivity"];
-  if(doc.containsKey("length")) Silo->length = doc["length"];
-  if(doc.containsKey("position")) Silo->position = doc["position"];
-  if(doc.containsKey("minBrightnes")) Silo->minBrightnes = doc["minBrightnes"];
-  if(doc.containsKey("maxBrightnes")) Silo->maxBrightnes = doc["maxBrightnes"];
-  if(doc.containsKey("timeVariance")) Silo->timeVariance = doc["timeVariance"];
-  if(doc.containsKey("maxBrightnesVariance")) Silo->maxBrightnesVariance = doc["maxBrightnesVariance"];
-  if(doc.containsKey("duration")) Silo->duration = doc["duration"];
-
+  if (doc.containsKey("time"))
+    Silo->time = doc["time"];
+  if (doc.containsKey("frequency"))
+    Silo->frequency = doc["frequency"];
+  if (doc.containsKey("sensitivity"))
+    Silo->sensitivity = doc["sensitivity"];
+  if (doc.containsKey("length"))
+    Silo->length = doc["length"];
+  if (doc.containsKey("position"))
+    Silo->position = doc["position"];
+  if (doc.containsKey("minBrightnes"))
+    Silo->minBrightnes = doc["minBrightnes"];
+  if (doc.containsKey("maxBrightnes"))
+    Silo->maxBrightnes = doc["maxBrightnes"];
+  if (doc.containsKey("timeVariance"))
+    Silo->timeVariance = doc["timeVariance"];
+  if (doc.containsKey("maxBrightnesVariance"))
+    Silo->maxBrightnesVariance = doc["maxBrightnesVariance"];
+  if (doc.containsKey("duration"))
+    Silo->duration = doc["duration"];
 
   debugFkt("Message arrived, Length: " + String(length), INFO);
 
   debugFkt("Parsed Values", DEBUG);
   debugFkt("Mode: " + String(Silo->mode), DEBUG);
-  debugFkt("(R-G-B-CW-WW): "+(String)Silo->colorValue.R+ "-" + (String)Silo->colorValue.G+ "-" + (String)Silo->colorValue.B+ "-" + (String)Silo->colorValue.CW+ "-" + (String)Silo->colorValue.WW,DEBUG);
+  debugFkt("(R-G-B-CW-WW): " + (String)Silo->colorValue.R + "-" + (String)Silo->colorValue.G + "-" + (String)Silo->colorValue.B + "-" + (String)Silo->colorValue.CW + "-" + (String)Silo->colorValue.WW, DEBUG);
   debugFkt("Time: " + String(Silo->time), DEBUG);
   debugFkt("Freq: " + String(Silo->frequency), DEBUG);
   debugFkt("sensitivity: " + String(Silo->sensitivity), DEBUG);
@@ -331,14 +379,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
   *varSiloChanged = true;
 }
 
-
-
-void initMQTT() {
-  if(strcmp(mqtt_ssl, "yes") == 0){
+void initMQTT()
+{
+  if (strcmp(mqtt_ssl, "yes") == 0)
+  {
+    espClientSecure.setFingerprint(fingerprint);
+    espClientSecure.setInsecure();
     client = PubSubClient(espClientSecure);
     debugFkt("Will compare SSL-Fingerprint and use WifiClientSecure", INFO);
-    espClientSecure.setFingerprint(fingerprint);
-  }else{
+  }
+  else
+  {
     client = PubSubClient(espClient);
     debugFkt("Will not use SSL -> Standard WifiClient", INFO);
   }
@@ -346,7 +397,6 @@ void initMQTT() {
   //set the server and callback function
   client.setServer(mqtt_server, atoi(mqtt_port));
   client.setCallback(callback);
-
 
   // Loop until we're reconnected
   byte reconnectCounter = 0;
@@ -359,23 +409,26 @@ void initMQTT() {
     debugFkt(mqtt_username, INFO);
     debugFkt(mqtt_password, INFO);
 
-
-
     client.setServer(mqtt_server, atoi(mqtt_port));
-    client.setCallback(callback);
 
     // Attempt to connect
     bool connected = false;
-    if(strcmp(mqtt_ssl, "yes") == 0){
+    if (strcmp(mqtt_ssl, "yes") == 0)
+    {
       debugFkt("connecting to mqtt server with password and username", INFO);
+      debugFkt(clientId.c_str(), INFO);
       connected = client.connect(clientId.c_str(), mqtt_username, mqtt_password);
-    }else{
+      debugFkt("got here", INFO);
+    }
+    else
+    {
       debugFkt("connecting to mqtt server without username and password", INFO);
       connected = client.connect(clientId.c_str());
     }
 
     //react to outcome of connect try
-    if (connected) {
+    if (connected)
+    {
 
       debugFkt("Now Connected - Main Topic of this device: ", INFO);
       debugFkt(mainTopic, INFO);
@@ -383,12 +436,13 @@ void initMQTT() {
 
       //subscribe this device's topic
       client.subscribe(mainTopic);
+      client.setCallback(callback);
 
       debugFkt("subscribed main Topic ", INFO);
 
       //Publish Info that Board Connected
       //client.publish("/ESPLED/",WiFi.macAddress().c_str());
-      String HelloMessage = "espled-board "+ WiFi.macAddress() + " connected";
+      String HelloMessage = "espled-board " + WiFi.macAddress() + " connected";
       client.publish("/ESPLED/", HelloMessage.c_str());
     }
     else
@@ -399,7 +453,8 @@ void initMQTT() {
       debugFkt("Try again in 5 seconds", ERROR);
 
       //restart esp after 10 tries
-      if(reconnectCounter++ > 10) ESP.restart();
+      if (reconnectCounter++ > 10)
+        ESP.restart();
 
       // Wait 5 seconds before retrying
       delay(5000);
