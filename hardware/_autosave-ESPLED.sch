@@ -1395,17 +1395,16 @@ Wire Wire Line
 Wire Wire Line
 	6650 4350 6650 4700
 Connection ~ 6150 4350
-Text Notes 5100 850  0    60   ~ 0
-Tauschen in C709357 KH-TYPE-C-16P https://datasheet.lcsc.com/lcsc/2009111434_Shenzhen-Kinghelm-Elec-KH-TYPE-C-16P_C709357.pdf
 $Comp
-L Connector:USB_C_Plug_USB2.0 P?
-U 1 1 6215D6AF
-P 6750 1350
-F 0 "P?" H 6857 2217 50  0000 C CNN
-F 1 "USB_C_Plug_USB2.0" H 6857 2126 50  0000 C CNN
-F 2 "Connector_USB:USB_C_Receptacle_Amphenol_12401610E4-2A" H 6900 1350 50  0001 C CNN
-F 3 "https://www.usb.org/sites/default/files/documents/usb_type-c.zip" H 6900 1350 50  0001 C CNN
-	1    6750 1350
-	1    0    0    -1  
+L Connector:USB_C_Plug P1
+U 1 1 621C3097
+P 6150 900
+F 0 "P1" V 6211 2030 50  0000 L CNN
+F 1 "USB_C_Plug" V 6302 2030 50  0000 L CNN
+F 2 "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12" H 6300 900 50  0001 C CNN
+F 3 "https://www.usb.org/sites/default/files/documents/usb_type-c.zip" H 6300 900 50  0001 C CNN
+F 4 "C165948" V 6150 900 50  0001 C CNN "JLCPCB"
+	1    6150 900 
+	0    1    1    0   
 $EndComp
 $EndSCHEMATC
